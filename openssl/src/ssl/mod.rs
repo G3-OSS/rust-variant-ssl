@@ -392,6 +392,20 @@ impl SslMethod {
         unsafe { SslMethod(ffi::NTLS_server_method()) }
     }
 
+    /// Support all versions of the DTLS protocol, explicitly as a client.
+    #[corresponds(DTLS_client_method)]
+    #[cfg(any(boringssl, ossl110, libressl291))]
+    pub fn dtls_client() -> SslMethod {
+        unsafe { SslMethod(DTLS_client_method()) }
+    }
+
+    /// Support all versions of the DTLS protocol, explicitly as a server.
+    #[corresponds(DTLS_server_method)]
+    #[cfg(any(boringssl, ossl110, libressl291))]
+    pub fn dtls_server() -> SslMethod {
+        unsafe { SslMethod(DTLS_server_method()) }
+    }
+
     /// Constructs an `SslMethod` from a pointer to the underlying OpenSSL value.
     ///
     /// # Safety
@@ -812,7 +826,7 @@ cfg_if! {
 ///
 /// [`SslContextBuilder::set_alpn_protos`]: struct.SslContextBuilder.html#method.set_alpn_protos
 #[corresponds(SSL_select_next_proto)]
-pub fn select_next_proto<'a>(server: &[u8], client: &'a [u8]) -> Option<&'a [u8]> {
+pub fn select_next_proto<'a>(server: &'a [u8], client: &'a [u8]) -> Option<&'a [u8]> {
     unsafe {
         let mut out = ptr::null_mut();
         let mut outlen = 0;
@@ -1081,12 +1095,23 @@ impl SslContextBuilder {
     /// The file should contain a sequence of PEM-formatted CA certificates.
     #[corresponds(SSL_CTX_load_verify_locations)]
     pub fn set_ca_file<P: AsRef<Path>>(&mut self, file: P) -> Result<(), ErrorStack> {
-        let file = CString::new(file.as_ref().as_os_str().to_str().unwrap()).unwrap();
+        self.load_verify_locations(Some(file.as_ref()), None)
+    }
+
+    /// Loads trusted root certificates from a file and/or a directory.
+    #[corresponds(SSL_CTX_load_verify_locations)]
+    pub fn load_verify_locations(
+        &mut self,
+        ca_file: Option<&Path>,
+        ca_path: Option<&Path>,
+    ) -> Result<(), ErrorStack> {
+        let ca_file = ca_file.map(|p| CString::new(p.as_os_str().to_str().unwrap()).unwrap());
+        let ca_path = ca_path.map(|p| CString::new(p.as_os_str().to_str().unwrap()).unwrap());
         unsafe {
             cvt(ffi::SSL_CTX_load_verify_locations(
                 self.as_ptr(),
-                file.as_ptr() as *const _,
-                ptr::null(),
+                ca_file.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
+                ca_path.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
             ))
             .map(|_| ())
         }
@@ -4961,7 +4986,7 @@ cfg_if! {
 }
 cfg_if! {
     if #[cfg(any(boringssl, ossl110, libressl291))] {
-        use ffi::{TLS_method, DTLS_method, TLS_client_method, TLS_server_method};
+        use ffi::{TLS_method, DTLS_method, TLS_client_method, TLS_server_method, DTLS_server_method, DTLS_client_method};
     } else {
         use ffi::{
             SSLv23_method as TLS_method, DTLSv1_method as DTLS_method, SSLv23_client_method as TLS_client_method,
