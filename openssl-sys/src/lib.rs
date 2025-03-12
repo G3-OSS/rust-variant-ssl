@@ -6,8 +6,7 @@
     non_upper_case_globals,
     unused_imports
 )]
-#![cfg_attr(feature = "boringssl", allow(ambiguous_glob_reexports))]
-#![doc(html_root_url = "https://docs.rs/variant-ssl-sys/0.10")]
+#![doc(html_root_url = "https://docs.rs/variant-ssl-sys/0.15")]
 #![recursion_limit = "128"] // configure fixed limit across all rust versions
 
 extern crate libc;
@@ -22,20 +21,6 @@ pub use bssl_sys::*;
 extern crate aws_lc_sys;
 #[cfg(feature = "aws-lc")]
 pub use aws_lc_sys::*;
-
-#[cfg(all(boringssl, not(feature = "boringssl"), not(feature = "aws-lc")))]
-#[path = "."]
-mod boringssl {
-    include!(concat!(env!("OUT_DIR"), "/bindgen.rs"));
-
-    pub fn init() {
-        unsafe {
-            CRYPTO_library_init();
-        }
-    }
-}
-#[cfg(all(boringssl, not(feature = "boringssl"), not(feature = "aws-lc")))]
-pub use boringssl::*;
 
 #[cfg(openssl)]
 #[path = "."]
