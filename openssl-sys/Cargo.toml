@@ -1,6 +1,6 @@
 [package]
 name = "variant-ssl-sys"
-version = "0.15.11"
+version = "0.15.12"
 license = "MIT"
 description = "FFI bindings to OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
 repository = "https://github.com/zh-jq/rust-variant-ssl"
