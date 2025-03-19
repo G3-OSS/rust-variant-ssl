@@ -12,9 +12,7 @@ fn main() {
     println!("cargo:rustc-check-cfg=cfg(tongsuo)");
     println!("cargo:rustc-check-cfg=cfg(libressl)");
     println!("cargo:rustc-check-cfg=cfg(boringssl)");
-
-    println!("cargo:rustc-check-cfg=cfg(bssl_google)");
-    println!("cargo:rustc-check-cfg=cfg(bssl_aws)");
+    println!("cargo:rustc-check-cfg=cfg(awslc)");
 
     println!("cargo:rustc-check-cfg=cfg(libressl250)");
     println!("cargo:rustc-check-cfg=cfg(libressl251)");
@@ -53,19 +51,12 @@ fn main() {
         println!("cargo:rustc-cfg=libressl");
     }
 
-    let mut is_boringssl = false;
-
     if env::var("DEP_OPENSSL_BORINGSSL").is_ok() {
-        println!("cargo:rustc-cfg=bssl_google");
-        is_boringssl = true;
-    }
-    if env::var("DEP_OPENSSL_AWS_LC").is_ok() {
-        println!("cargo:rustc-cfg=bssl_aws");
-        is_boringssl = true;
+        println!("cargo:rustc-cfg=boringssl");
     }
 
-    if is_boringssl {
-        println!("cargo:rustc-cfg=boringssl");
+    if env::var("DEP_OPENSSL_AWSLC").is_ok() {
+        println!("cargo:rustc-cfg=awslc");
     }
 
     if let Ok(v) = env::var("DEP_OPENSSL_LIBRESSL_VERSION_NUMBER") {
