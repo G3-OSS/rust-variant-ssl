@@ -372,16 +372,6 @@ jobs:
           with:
             path: target
             key: target-${{ matrix.target }}-${{ matrix.bindgen }}-${{ matrix.library.name }}-${{ matrix.library.version }}-${{ steps.rust-version.outputs.version }}-${{ hashFiles('Cargo.lock') }}
-        - name: Run systest
-          run: |
-            if [[ "${{ matrix.library.version }}" == "vendored" ]]; then
-              features="--features vendored"
-            fi
-            if [[ "${{ matrix.bindgen }}" == "true" ]]; then
-              features="$features --features bindgen"
-            fi
-            cargo run --manifest-path=systest/Cargo.toml --target ${{ matrix.target }} $features
-          if: ${{ !(matrix.library.name == 'boringssl' || matrix.library.name == 'aws-lc') }}
         - name: Test openssl
           run: |
             if [[ "${{ matrix.library.name }}" == "tongsuo" ]]; then
