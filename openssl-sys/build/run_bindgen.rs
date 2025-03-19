@@ -84,7 +84,7 @@ pub fn run(include_dirs: &[PathBuf]) {
 
     let mut builder = bindgen::builder()
         .parse_callbacks(Box::new(OpensslCallbacks))
-        .rust_target(RustTarget::stable(71, 0).unwrap_or_default())
+        .rust_target(RustTarget::Stable_1_71)
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .raw_line("#[cfg(windows)] use std::os::windows::raw::HANDLE;")
@@ -138,7 +138,7 @@ pub fn run_boringssl(include_dirs: &[PathBuf]) {
         .expect("Failed to write contents to boring_static_wrapper.h");
 
     let mut builder = bindgen::builder()
-        .rust_target(RustTarget::Stable_1_47)
+        .rust_target(RustTarget::Stable_1_71)
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .derive_default(false)
@@ -192,7 +192,7 @@ pub fn run_boringssl(include_dirs: &[PathBuf]) {
         .arg(out_dir.join("bindgen.rs"))
         // Must be a valid version from
         // https://docs.rs/bindgen/latest/bindgen/enum.RustTarget.html
-        .arg("--rust-target=1.47")
+        .arg("--rust-target=1.71")
         .arg("--ctypes-prefix=::libc")
         .arg("--raw-line=use libc::*;")
         .arg("--no-derive-default")
@@ -261,7 +261,7 @@ pub fn run_awslc(include_dirs: &[PathBuf], symbol_prefix: Option<String>) {
         .expect("Failed to write contents to awslc_static_wrapper.h");
 
     let mut builder = bindgen::builder()
-        .rust_target(RustTarget::Stable_1_47)
+        .rust_target(RustTarget::Stable_1_71)
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .derive_default(false)
@@ -318,7 +318,7 @@ pub fn run_awslc(include_dirs: &[PathBuf], symbol_prefix: Option<String>) {
         .arg(out_dir.join("bindgen.rs"))
         // Must be a valid version from
         // https://docs.rs/bindgen/latest/bindgen/enum.RustTarget.html
-        .arg("--rust-target=1.47")
+        .arg("--rust-target=1.71")
         .arg("--ctypes-prefix=::libc")
         .arg("--raw-line=use libc::*;")
         .arg("--no-derive-default")

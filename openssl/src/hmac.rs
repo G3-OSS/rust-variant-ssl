@@ -47,7 +47,7 @@ impl HMacCtxRef {
     ///
     /// This will make it suitable for new computations as if it was newly created with HMAC_CTX_new().
     #[corresponds(HMAC_CTX_reset)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     #[inline]
     pub fn reset(&mut self) -> Result<(), ErrorStack> {
         unsafe {
@@ -67,7 +67,7 @@ impl HMacCtxRef {
     #[corresponds(HMAC_Init_ex)]
     pub fn init_ex(&mut self, key: Option<&[u8]>, md: &MdRef) -> Result<(), ErrorStack> {
         let key_len = key.map(|v| v.len()).unwrap_or_default();
-        #[cfg(not(boringssl))]
+        #[cfg(not(any(boringssl, awslc)))]
         let key_len = i32::try_from(key_len).unwrap();
         let key = key.map(|v| v.as_ptr()).unwrap_or(ptr::null());
         unsafe {
@@ -98,7 +98,7 @@ impl HMacCtxRef {
     ///
     /// On entry, ctx must have been setup with init_ex
     #[corresponds(HMAC_size)]
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, boringssl, awslc))]
     pub fn size(&self) -> usize {
         // HMAC_size is a macro in LibreSSL
         unsafe { ffi::HMAC_size(self.as_ptr()) }
@@ -107,7 +107,7 @@ impl HMacCtxRef {
     /// Returns the size, in bytes, of the HMAC that will be produced by ctx.
     ///
     /// On entry, ctx must have been setup with init_ex
-    #[cfg(not(any(ossl110, boringssl)))]
+    #[cfg(not(any(ossl110, boringssl, awslc)))]
     pub fn size(&self) -> usize {
         self.md().map(|md| md.size()).unwrap_or_default()
     }

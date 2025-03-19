@@ -27,7 +27,7 @@ use crate::ssl::{
     try_get_session_ctx_index, SniError, Ssl, SslAlert, SslContext, SslContextRef, SslRef,
     SslSession, SslSessionRef, TicketKeyStatus,
 };
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 use crate::ssl::{ClientHello, SelectCertError};
 #[cfg(ossl111)]
 use crate::ssl::{ClientHelloError, ExtensionContext};
@@ -731,7 +731,7 @@ where
     }
 }
 
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 pub(super) unsafe extern "C" fn raw_select_cert<F>(
     client_hello: *const ffi::SSL_CLIENT_HELLO,
 ) -> ffi::ssl_select_cert_result_t
@@ -752,7 +752,7 @@ where
     }
 }
 
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 pub(super) unsafe extern "C" fn raw_cert_decompression<F>(
     ssl: *mut ffi::SSL,
     out: *mut *mut ffi::CRYPTO_BUFFER,

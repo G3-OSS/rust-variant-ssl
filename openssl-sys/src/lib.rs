@@ -19,11 +19,6 @@ pub use bssl_sys::*;
 
 #[cfg(feature = "aws-lc")]
 extern crate aws_lc_sys;
-#[cfg(feature = "aws-lc")]
-pub use aws_lc_sys::*;
-
-#[cfg(feature = "aws-lc")]
-extern crate aws_lc_sys;
 
 #[cfg(awslc)]
 #[path = "."]

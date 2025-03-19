@@ -114,14 +114,14 @@ pub use crate::ssl::error::{Error, ErrorCode, HandshakeError};
 
 mod bio;
 mod callbacks;
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 mod client_hello;
 mod connector;
 mod error;
 #[cfg(test)]
 mod test;
 
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 pub use client_hello::ClientHello;
 
 /// Returns the OpenSSL name of a cipher corresponding to an RFC-standard cipher name.
@@ -718,10 +718,10 @@ impl TicketKeyStatus {
 
 /// An error returned from a certificate selection callback.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 pub struct SelectCertError(ffi::ssl_select_cert_result_t);
 
-#[cfg(boringssl)]
+#[cfg(any(boringssl, awslc))]
 impl SelectCertError {
     /// A fatal error occurred and the handshake should be terminated.
     pub const ERROR: Self = Self(ffi::ssl_select_cert_result_t_ssl_select_cert_error);
@@ -975,7 +975,7 @@ impl SslContextBuilder {
     ///
     /// Requires AWS-LC or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_CTX_set0_verify_cert_store)]
-    #[cfg(any(ossl102, boringssl))]
+    #[cfg(any(ossl102, boringssl, awslc))]
     pub fn set_verify_cert_store(&mut self, cert_store: X509Store) -> Result<(), ErrorStack> {
         unsafe {
             let ptr = cert_store.as_ptr();
@@ -1632,7 +1632,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_add_cert_compression_alg`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_add_cert_compression_alg
     ///
     /// Requires BoringSSL or Tongsuo.
-    #[cfg(any(boringssl, tongsuo))]
+    #[cfg(any(boringssl, tongsuo, awslc))]
     pub fn add_cert_decompression_alg<F>(
         &mut self,
         alg_id: CertCompressionAlgorithm,
@@ -1678,7 +1678,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_enable_ocsp_stapling`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_enable_ocsp_stapling
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn enable_ocsp_stapling(&mut self) {
         unsafe { ffi::SSL_CTX_enable_ocsp_stapling(self.as_ptr()) }
     }
@@ -1690,7 +1690,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_enable_signed_cert_timestamps`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_enable_signed_cert_timestamps
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn enable_signed_cert_timestamps(&mut self) {
         unsafe { ffi::SSL_CTX_enable_signed_cert_timestamps(self.as_ptr()) }
     }
@@ -1702,7 +1702,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_set_grease_enabled`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_set_grease_enabled
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn set_grease_enabled(&mut self, enabled: bool) {
         unsafe { ffi::SSL_CTX_set_grease_enabled(self.as_ptr(), enabled as c_int) }
     }
@@ -1714,7 +1714,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_set_permute_extensions`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_set_permute_extensions
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn set_permute_extensions(&mut self, enabled: bool) {
         unsafe { ffi::SSL_CTX_set_permute_extensions(self.as_ptr(), enabled as c_int) }
     }
@@ -1735,7 +1735,7 @@ impl SslContextBuilder {
 
     /// Sets the status response a client wishes the server to reply with.
     #[corresponds(SSL_CTX_set_tlsext_status_type)]
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc)))]
     pub fn set_status_type(&mut self, type_: StatusType) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::SSL_CTX_set_tlsext_status_type(self.as_ptr(), type_.as_raw()) as c_int)
@@ -2139,7 +2139,7 @@ impl SslContextBuilder {
     /// [`SSL_CTX_set_select_certificate_cb`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_CTX_set_select_certificate_cb
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn set_select_certificate_callback<F>(&mut self, callback: F)
     where
         F: Fn(ClientHello<'_>) -> Result<(), SelectCertError> + Sync + Send + 'static,
@@ -2213,7 +2213,7 @@ impl SslContextBuilder {
     ///
     /// Requires OpenSSL 1.1.1 or newer.
     #[corresponds(SSL_CTX_set_num_tickets)]
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(any(ossl111, boringssl, awslc))]
     pub fn set_num_tickets(&mut self, num_tickets: usize) -> Result<(), ErrorStack> {
         unsafe { cvt(ffi::SSL_CTX_set_num_tickets(self.as_ptr(), num_tickets)).map(|_| ()) }
     }
@@ -2707,7 +2707,7 @@ impl SslSessionRef {
 
     /// Returns the session's TLS protocol version.
     #[corresponds(SSL_SESSION_get_protocol_version)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn protocol_version(&self) -> SslVersion {
         unsafe {
             let version = ffi::SSL_SESSION_get_protocol_version(self.as_ptr());
@@ -2890,7 +2890,7 @@ impl SslRef {
         unsafe { ffi::SSL_set_accept_state(self.as_ptr()) }
     }
 
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     #[corresponds(SSL_ech_accepted)]
     pub fn ech_accepted(&self) -> bool {
         unsafe { ffi::SSL_ech_accepted(self.as_ptr()) != 0 }
@@ -3434,7 +3434,7 @@ impl SslRef {
     /// [`SSL_enable_ocsp_stapling`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_enable_ocsp_stapling
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn enable_ocsp_stapling(&mut self) {
         unsafe { ffi::SSL_enable_ocsp_stapling(self.as_ptr()) }
     }
@@ -3446,7 +3446,7 @@ impl SslRef {
     /// [`SSL_enable_signed_cert_timestamps`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_enable_signed_cert_timestamps
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn enable_signed_cert_timestamps(&mut self) {
         unsafe { ffi::SSL_enable_signed_cert_timestamps(self.as_ptr()) }
     }
@@ -3458,7 +3458,7 @@ impl SslRef {
     /// [`SSL_set_permute_extensions`]: https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_set_permute_extensions
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn set_permute_extensions(&mut self, enabled: bool) {
         unsafe { ffi::SSL_set_permute_extensions(self.as_ptr(), enabled as c_int) }
     }
@@ -3517,7 +3517,7 @@ impl SslRef {
 
     /// Returns the server's OCSP response, if present.
     #[corresponds(SSL_get0_ocsp_response)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn ocsp_status(&self) -> Option<&[u8]> {
         unsafe {
             let mut p = ptr::null();
@@ -3555,7 +3555,7 @@ impl SslRef {
 
     /// Sets the OCSP response to be returned to the client.
     #[corresponds(SSL_set_ocsp_response)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub fn set_ocsp_status(&mut self, response: &[u8]) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::SSL_set_ocsp_response(
@@ -3870,7 +3870,7 @@ impl SslRef {
     }
 
     #[corresponds(SSL_add0_chain_cert)]
-    #[cfg(any(ossl102, boringssl))]
+    #[cfg(any(ossl102, boringssl, awslc))]
     pub fn add_chain_cert(&mut self, chain: X509) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::SSL_add0_chain_cert(self.as_ptr(), chain.as_ptr()) as c_int).map(|_| ())?;
@@ -4115,7 +4115,7 @@ impl SslRef {
 
     /// Set the certificate store used for certificate verification
     #[corresponds(SSL_set_cert_store)]
-    #[cfg(any(ossl102, boringssl))]
+    #[cfg(any(ossl102, boringssl, awslc))]
     pub fn set_verify_cert_store(&mut self, cert_store: X509Store) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::SSL_set0_verify_cert_store(self.as_ptr(), cert_store.as_ptr()) as c_int)?;
