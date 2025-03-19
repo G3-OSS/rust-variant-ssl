@@ -21,7 +21,7 @@
 //! ```
 
 #![cfg_attr(
-    not(boringssl),
+    not(any(boringssl, awslc)),
     doc = r#"\
 Generate a CMAC key
 
@@ -64,7 +64,7 @@ let cmac_key = ctx.keygen().unwrap();
 //! let valid = ctx.verify(text, &signature).unwrap();
 //! assert!(valid);
 //! ```
-#[cfg(not(boringssl))]
+#[cfg(not(any(boringssl, awslc)))]
 use crate::cipher::CipherRef;
 use crate::error::ErrorStack;
 use crate::md::MdRef;
@@ -83,10 +83,10 @@ use std::ffi::CStr;
 use std::ptr;
 
 /// HKDF modes of operation.
-#[cfg(any(ossl111, boringssl, libressl360))]
+#[cfg(any(ossl111, boringssl, libressl360, awslc))]
 pub struct HkdfMode(c_int);
 
-#[cfg(any(ossl111, boringssl, libressl360))]
+#[cfg(any(ossl111, boringssl, libressl360, awslc))]
 impl HkdfMode {
     /// This is the default mode. Calling [`derive`][PkeyCtxRef::derive] on a [`PkeyCtxRef`] set up
     /// for HKDF will perform an extract followed by an expand operation in one go. The derived key
@@ -500,7 +500,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// This is only useful for RSA keys.
     #[corresponds(EVP_PKEY_CTX_set_rsa_oaep_md)]
-    #[cfg(any(ossl102, libressl310, boringssl))]
+    #[cfg(any(ossl102, libressl310, boringssl, awslc))]
     #[inline]
     pub fn set_rsa_oaep_md(&mut self, md: &MdRef) -> Result<(), ErrorStack> {
         unsafe {
@@ -517,7 +517,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// This is only useful for RSA keys.
     #[corresponds(EVP_PKEY_CTX_set0_rsa_oaep_label)]
-    #[cfg(any(ossl102, libressl310, boringssl))]
+    #[cfg(any(ossl102, libressl310, boringssl, awslc))]
     pub fn set_rsa_oaep_label(&mut self, label: &[u8]) -> Result<(), ErrorStack> {
         use crate::LenType;
         let len = LenType::try_from(label.len()).unwrap();
@@ -541,7 +541,7 @@ impl<T> PkeyCtxRef<T> {
     }
 
     /// Sets the cipher used during key generation.
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc)))]
     #[corresponds(EVP_PKEY_CTX_ctrl)]
     #[inline]
     pub fn set_keygen_cipher(&mut self, cipher: &CipherRef) -> Result<(), ErrorStack> {
@@ -560,7 +560,7 @@ impl<T> PkeyCtxRef<T> {
     }
 
     /// Sets the key MAC key used during key generation.
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc)))]
     #[corresponds(EVP_PKEY_CTX_ctrl)]
     #[inline]
     pub fn set_keygen_mac_key(&mut self, key: &[u8]) -> Result<(), ErrorStack> {
@@ -584,7 +584,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(EVP_PKEY_CTX_set_hkdf_md)]
-    #[cfg(any(ossl110, boringssl, libressl360))]
+    #[cfg(any(ossl110, boringssl, libressl360, awslc))]
     #[inline]
     pub fn set_hkdf_md(&mut self, digest: &MdRef) -> Result<(), ErrorStack> {
         unsafe {
@@ -627,7 +627,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// Requires BoringSSL.
     #[corresponds(EVP_PKEY_CTX_hkdf_mode)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     #[inline]
     pub fn set_hkdf_mode(&mut self, mode: HkdfMode) -> Result<(), ErrorStack> {
         unsafe {
@@ -646,12 +646,12 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(EVP_PKEY_CTX_set1_hkdf_key)]
-    #[cfg(any(ossl110, boringssl, libressl360))]
+    #[cfg(any(ossl110, boringssl, libressl360, awslc))]
     #[inline]
     pub fn set_hkdf_key(&mut self, key: &[u8]) -> Result<(), ErrorStack> {
-        #[cfg(not(boringssl))]
+        #[cfg(not(any(boringssl, awslc)))]
         let len = c_int::try_from(key.len()).unwrap();
-        #[cfg(boringssl)]
+        #[cfg(any(boringssl, awslc))]
         let len = key.len();
 
         unsafe {
@@ -671,12 +671,12 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(EVP_PKEY_CTX_set1_hkdf_salt)]
-    #[cfg(any(ossl110, boringssl, libressl360))]
+    #[cfg(any(ossl110, boringssl, libressl360, awslc))]
     #[inline]
     pub fn set_hkdf_salt(&mut self, salt: &[u8]) -> Result<(), ErrorStack> {
-        #[cfg(not(boringssl))]
+        #[cfg(not(any(boringssl, awslc)))]
         let len = c_int::try_from(salt.len()).unwrap();
-        #[cfg(boringssl)]
+        #[cfg(any(boringssl, awslc))]
         let len = salt.len();
 
         unsafe {
@@ -696,12 +696,12 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(EVP_PKEY_CTX_add1_hkdf_info)]
-    #[cfg(any(ossl110, boringssl, libressl360))]
+    #[cfg(any(ossl110, boringssl, libressl360, awslc))]
     #[inline]
     pub fn add_hkdf_info(&mut self, info: &[u8]) -> Result<(), ErrorStack> {
-        #[cfg(not(boringssl))]
+        #[cfg(not(any(boringssl, awslc)))]
         let len = c_int::try_from(info.len()).unwrap();
-        #[cfg(boringssl)]
+        #[cfg(any(boringssl, awslc))]
         let len = info.len();
 
         unsafe {
@@ -804,7 +804,7 @@ impl<T> PkeyCtxRef<T> {
 #[cfg(test)]
 mod test {
     use super::*;
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc)))]
     use crate::cipher::Cipher;
     use crate::ec::{EcGroup, EcKey};
     use crate::hash::{hash, MessageDigest};
@@ -838,7 +838,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(any(ossl102, libressl310, boringssl))]
+    #[cfg(any(ossl102, libressl310, boringssl, awslc))]
     fn rsa_oaep() {
         let key = include_bytes!("../test/rsa.pem");
         let rsa = Rsa::private_key_from_pem(key).unwrap();
@@ -929,7 +929,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc)))]
     fn cmac_keygen() {
         let mut ctx = PkeyCtx::new_id(Id::CMAC).unwrap();
         ctx.keygen_init().unwrap();
@@ -940,7 +940,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(any(ossl110, boringssl, libressl360))]
+    #[cfg(any(ossl110, boringssl, libressl360, awslc))]
     fn hkdf() {
         let mut ctx = PkeyCtx::new_id(Id::HKDF).unwrap();
         ctx.derive_init().unwrap();

@@ -11,7 +11,7 @@ use libc::{c_int, c_uchar, c_uint, c_void};
 use std::ffi::CStr;
 use std::mem;
 use std::ptr;
-#[cfg(any(ossl111, boringssl))]
+#[cfg(any(ossl111, boringssl, awslc))]
 use std::str;
 use std::sync::Arc;
 
@@ -21,7 +21,7 @@ use crate::hmac::HMacCtxRef;
 #[cfg(ossl300)]
 use crate::mac_ctx::MacCtxRef;
 use crate::pkey::Params;
-#[cfg(any(ossl102, libressl261, boringssl))]
+#[cfg(any(ossl102, libressl261, boringssl, awslc))]
 use crate::ssl::AlpnError;
 use crate::ssl::{
     try_get_session_ctx_index, SniError, Ssl, SslAlert, SslContext, SslContextRef, SslRef,
@@ -32,7 +32,7 @@ use crate::ssl::{ClientHello, SelectCertError};
 #[cfg(ossl111)]
 use crate::ssl::{ClientHelloError, ExtensionContext};
 use crate::util;
-#[cfg(any(ossl111, boringssl))]
+#[cfg(any(ossl111, boringssl, awslc))]
 use crate::util::ForeignTypeRefExt;
 #[cfg(ossl111)]
 use crate::x509::X509Ref;
@@ -182,7 +182,7 @@ where
     }
 }
 
-#[cfg(any(ossl102, libressl261, boringssl))]
+#[cfg(any(ossl102, libressl261, boringssl, awslc))]
 pub extern "C" fn raw_alpn_select<F>(
     ssl: *mut ffi::SSL,
     out: *mut *const c_uchar,
@@ -422,7 +422,7 @@ pub unsafe extern "C" fn raw_remove_session<F>(
 }
 
 cfg_if! {
-    if #[cfg(any(ossl110, libressl280, boringssl))] {
+    if #[cfg(any(ossl110, libressl280, boringssl, awslc))] {
         type DataPtr = *const c_uchar;
     } else {
         type DataPtr = *mut c_uchar;
@@ -460,7 +460,7 @@ where
     }
 }
 
-#[cfg(any(ossl111, boringssl))]
+#[cfg(any(ossl111, boringssl, awslc))]
 pub unsafe extern "C" fn raw_keylog<F>(ssl: *const ffi::SSL, line: *const c_char)
 where
     F: Fn(&SslRef, &str) + 'static + Sync + Send,
@@ -523,7 +523,7 @@ where
     (*callback)(ssl, slice) as c_int
 }
 
-#[cfg(not(boringssl))]
+#[cfg(not(any(boringssl, awslc)))]
 pub extern "C" fn raw_cookie_generate<F>(
     ssl: *mut ffi::SSL,
     cookie: *mut c_uchar,
@@ -556,7 +556,7 @@ where
     }
 }
 
-#[cfg(not(boringssl))]
+#[cfg(not(any(boringssl, awslc)))]
 cfg_if! {
     if #[cfg(any(ossl110, libressl280))] {
         type CookiePtr = *const c_uchar;
@@ -565,7 +565,7 @@ cfg_if! {
     }
 }
 
-#[cfg(not(boringssl))]
+#[cfg(not(any(boringssl, awslc)))]
 pub extern "C" fn raw_cookie_verify<F>(
     ssl: *mut ffi::SSL,
     cookie: CookiePtr,
