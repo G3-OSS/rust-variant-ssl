@@ -389,7 +389,7 @@ jobs:
             if [[ "${{ matrix.bindgen }}" == "true" ]]; then
               features="$features --features bindgen"
             fi
-            cargo test --manifest-path=openssl/Cargo.toml --target ${{ matrix.target }} $features
+            cargo test --manifest-path=openssl/Cargo.toml --target ${{ matrix.target }} $features --tests
         - name: Test openssl-errors
           run: |
             if [[ "${{ matrix.library.version }}" == "vendored" ]]; then
@@ -398,5 +398,5 @@ jobs:
             if [[ "${{ matrix.bindgen }}" == "true" ]]; then
               features="$features --features openssl-sys/bindgen"
             fi
-            cargo test --manifest-path=openssl-errors/Cargo.toml --target ${{ matrix.target }} $features
+            cargo test --manifest-path=openssl-errors/Cargo.toml --target ${{ matrix.target }} $features --tests
           if: ${{ !(matrix.library.name == 'boringssl' || matrix.library.name == 'aws-lc') }}
