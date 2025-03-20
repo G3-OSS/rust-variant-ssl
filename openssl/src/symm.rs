@@ -109,7 +109,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_ctr()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_128_cfb1() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_cfb1()) }
     }
@@ -119,7 +119,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_cfb128()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_128_cfb8() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_cfb8()) }
     }
@@ -128,7 +128,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_gcm()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_128_ccm() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_128_ccm()) }
     }
@@ -155,7 +155,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_192_ctr()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_192_cfb1() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_192_cfb1()) }
     }
@@ -165,7 +165,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_192_cfb128()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_192_cfb8() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_192_cfb8()) }
     }
@@ -197,7 +197,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_cbc()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_256_xts() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_xts()) }
     }
@@ -206,7 +206,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_ctr()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_256_cfb1() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_cfb1()) }
     }
@@ -216,7 +216,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_cfb128()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_256_cfb8() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_cfb8()) }
     }
@@ -225,7 +225,7 @@ impl Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_gcm()) }
     }
 
-    #[cfg(not(any(boringssl, awslc)))]
+    #[cfg(not(boringssl))]
     pub fn aes_256_ccm() -> Cipher {
         unsafe { Cipher(ffi::EVP_aes_256_ccm()) }
     }
@@ -387,7 +387,7 @@ impl Cipher {
     }
 
     /// Requires OpenSSL 1.1.0 or newer.
-    #[cfg(all(any(ossl110, libressl360), not(osslconf = "OPENSSL_NO_CHACHA")))]
+    #[cfg(all(any(ossl110, libressl360, awslc), not(osslconf = "OPENSSL_NO_CHACHA")))]
     pub fn chacha20_poly1305() -> Cipher {
         unsafe { Cipher(ffi::EVP_chacha20_poly1305()) }
     }
@@ -1503,7 +1503,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(any(ossl110, libressl360))]
+    #[cfg(any(ossl110, libressl360, awslc))]
     fn test_chacha20_poly1305() {
         let key = "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f";
         let iv = "070000004041424344454647";
