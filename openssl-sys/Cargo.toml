@@ -1,15 +1,15 @@
 [package]
 name = "variant-ssl-sys"
-version = "0.15.12"
+version = "0.16.0"
 license = "MIT"
 description = "FFI bindings to OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
-repository = "https://github.com/zh-jq/rust-variant-ssl"
+repository = "https://github.com/G3-OSS/rust-variant-ssl"
 readme = "README.md"
 categories = ["cryptography", "external-ffi-bindings"]
 links = "openssl"
 build = "build/main.rs"
 edition = "2021"
-rust-version = "1.70.0"
+rust-version = "1.71.0"
 
 [features]
 vendored = ["dep:openssl-src"]
