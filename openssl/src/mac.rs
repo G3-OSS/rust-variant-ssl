@@ -33,7 +33,7 @@ impl Mac {
             let ptr = cvt_p(ffi::EVP_MAC_fetch(
                 ctx.map_or(ptr::null_mut(), ForeignTypeRef::as_ptr),
                 algorithm.as_ptr(),
-                properties.map_or(ptr::null_mut(), |s| s.as_ptr()),
+                properties.as_ref().map_or(ptr::null_mut(), |s| s.as_ptr()),
             ))?;
 
             Ok(Mac::from_ptr(ptr))
