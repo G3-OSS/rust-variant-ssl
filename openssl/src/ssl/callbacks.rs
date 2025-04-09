@@ -32,7 +32,6 @@ use crate::ssl::{ClientHello, SelectCertError};
 #[cfg(ossl111)]
 use crate::ssl::{ClientHelloError, ExtensionContext};
 use crate::util;
-#[cfg(any(ossl111, boringssl, awslc))]
 use crate::util::ForeignTypeRefExt;
 #[cfg(ossl111)]
 use crate::x509::X509Ref;
