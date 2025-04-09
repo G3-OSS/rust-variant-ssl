@@ -731,6 +731,34 @@ where
     }
 }
 
+pub(super) unsafe extern "C" fn raw_info<F>(ssl: *const ffi::SSL, r#where: c_int, ret: c_int)
+where
+    F: Fn(&SslRef, i32, i32) + 'static + Sync + Send,
+{
+    let ssl = SslRef::from_const_ptr(ssl);
+
+    let callback = ssl
+        .ssl_context()
+        .ex_data(SslContext::cached_ex_index::<F>())
+        .expect("BUG: select cert callback missing");
+
+    callback(ssl, r#where, ret);
+}
+
+pub(super) unsafe extern "C" fn ssl_raw_info<F>(ssl: *const ffi::SSL, r#where: c_int, ret: c_int)
+where
+    F: Fn(&SslRef, i32, i32) + 'static + Sync + Send,
+{
+    let ssl = SslRef::from_const_ptr(ssl);
+
+    let callback = ssl
+        .ex_data(Ssl::cached_ex_index::<Arc<F>>())
+        .expect("BUG: select cert callback missing")
+        .clone();
+
+    callback(ssl, r#where, ret);
+}
+
 #[cfg(any(boringssl, awslc))]
 pub(super) unsafe extern "C" fn raw_select_cert<F>(
     client_hello: *const ffi::SSL_CLIENT_HELLO,

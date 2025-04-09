@@ -2175,6 +2175,19 @@ impl SslContextBuilder {
         }
     }
 
+    /// Sets the callback function that can be used to obtain state information for SSL objects
+    /// created from ctx during connection setup and use.
+    #[corresponds(SSL_CTX_set_info_callback)]
+    pub fn set_info_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(&SslRef, i32, i32) + 'static + Sync + Send,
+    {
+        unsafe {
+            self.set_ex_data_inner(SslContext::cached_ex_index::<F>(), callback);
+            ffi::SSL_CTX_set_info_callback(self.as_ptr(), Some(callbacks::raw_info::<F>));
+        }
+    }
+
     /// Sets the context's session cache size limit, returning the previous limit.
     ///
     /// A value of 0 means that the cache size is unbounded.
@@ -2972,6 +2985,20 @@ impl SslRef {
                 mode.bits() as c_int,
                 Some(ssl_raw_verify::<F>),
             );
+        }
+    }
+
+    // Sets the callback function, that can be used to obtain state information for ssl during
+    // connection setup and use
+    #[corresponds(SSL_set_info_callback)]
+    pub fn set_info_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(&SslRef, i32, i32) + 'static + Sync + Send,
+    {
+        unsafe {
+            // this needs to be in an Arc since the callback can register a new callback!
+            self.set_ex_data(Ssl::cached_ex_index(), Arc::new(callback));
+            ffi::SSL_set_info_callback(self.as_ptr(), Some(callbacks::ssl_raw_info::<F>));
         }
     }
 

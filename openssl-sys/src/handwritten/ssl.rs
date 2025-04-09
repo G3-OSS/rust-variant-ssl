@@ -880,6 +880,21 @@ extern "C" {
 }
 
 extern "C" {
+    pub fn SSL_CTX_set_info_callback(
+        ctx: *mut SSL_CTX,
+        cb: ::std::option::Option<
+            unsafe extern "C" fn(ssl: *const SSL, type_: ::libc::c_int, val: ::libc::c_int),
+        >,
+    );
+    pub fn SSL_set_info_callback(
+        ssl: *mut SSL,
+        cb: ::std::option::Option<
+            unsafe extern "C" fn(ssl: *const SSL, type_: ::libc::c_int, val: ::libc::c_int),
+        >,
+    );
+}
+
+extern "C" {
     pub fn SSL_CTX_set_tmp_dh_callback(
         ctx: *mut SSL_CTX,
         dh: Option<
