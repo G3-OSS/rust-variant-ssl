@@ -181,7 +181,6 @@ where
     }
 }
 
-#[cfg(any(ossl102, libressl261, boringssl, awslc))]
 pub extern "C" fn raw_alpn_select<F>(
     ssl: *mut ffi::SSL,
     out: *mut *const c_uchar,
