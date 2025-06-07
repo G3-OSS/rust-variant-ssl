@@ -456,7 +456,7 @@ cfg_if! {
     }
 }
 
-#[cfg(ossl102)]
+#[cfg(any(ossl102, libressl291))]
 pub unsafe fn SSL_add0_chain_cert(ssl: *mut SSL, ptr: *mut X509) -> c_long {
     SSL_ctrl(ssl, SSL_CTRL_CHAIN_CERT, 0, ptr as *mut c_void)
 }
