@@ -364,7 +364,7 @@ pub const SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB: c_int = 72;
 pub const SSL_CTRL_CLEAR_OPTIONS: c_int = 77;
 pub const SSL_CTRL_CLEAR_MODE: c_int = 78;
 pub const SSL_CTRL_GET_EXTRA_CHAIN_CERTS: c_int = 82;
-#[cfg(ossl102)]
+#[cfg(any(ossl102, libressl291))]
 pub const SSL_CTRL_CHAIN_CERT: c_int = 89;
 #[cfg(any(ossl111, libressl252))]
 pub const SSL_CTRL_SET_GROUPS_LIST: c_int = 92;
