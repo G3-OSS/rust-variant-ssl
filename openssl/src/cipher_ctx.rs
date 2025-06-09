@@ -122,7 +122,7 @@ impl CipherCtxRef {
     ///
     /// This will free up any allocated memory associated with it, except the ctx itself
     #[corresponds(EVP_CIPHER_CTX_reset)]
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     #[inline]
     pub fn reset(&mut self) -> Result<(), ErrorStack> {
         unsafe {

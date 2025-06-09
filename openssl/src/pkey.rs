@@ -98,11 +98,11 @@ impl Id {
 
     #[cfg(any(ossl111, boringssl, libressl370, awslc))]
     pub const ED25519: Id = Id(ffi::EVP_PKEY_ED25519);
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(ossl111)]
     pub const ED448: Id = Id(ffi::EVP_PKEY_ED448);
     #[cfg(any(ossl111, boringssl, libressl370, awslc))]
     pub const X25519: Id = Id(ffi::EVP_PKEY_X25519);
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(ossl111)]
     pub const X448: Id = Id(ffi::EVP_PKEY_X448);
     #[cfg(ossl111)]
     pub const POLY1305: Id = Id(ffi::EVP_PKEY_POLY1305);
@@ -587,7 +587,7 @@ impl PKey<Private> {
     /// assert_eq!(secret.len(), 56);
     /// # Ok(()) }
     /// ```
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(ossl111)]
     pub fn generate_x448() -> Result<PKey<Private>, ErrorStack> {
         PKey::generate_eddsa(Id::X448)
     }
@@ -639,7 +639,7 @@ impl PKey<Private> {
     /// assert_eq!(signature.len(), 114);
     /// # Ok(()) }
     /// ```
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(ossl111)]
     pub fn generate_ed448() -> Result<PKey<Private>, ErrorStack> {
         PKey::generate_eddsa(Id::ED448)
     }
@@ -1159,9 +1159,9 @@ mod tests {
     fn test_raw_public_key_bytes() {
         test_raw_public_key(PKey::generate_x25519, Id::X25519);
         test_raw_public_key(PKey::generate_ed25519, Id::ED25519);
-        #[cfg(not(any(boringssl, libressl370, awslc)))]
+        #[cfg(not(any(libressl, boringssl, awslc)))]
         test_raw_public_key(PKey::generate_x448, Id::X448);
-        #[cfg(not(any(boringssl, libressl370, awslc)))]
+        #[cfg(not(any(libressl, boringssl, awslc)))]
         test_raw_public_key(PKey::generate_ed448, Id::ED448);
     }
 
@@ -1170,9 +1170,9 @@ mod tests {
     fn test_raw_private_key_bytes() {
         test_raw_private_key(PKey::generate_x25519, Id::X25519);
         test_raw_private_key(PKey::generate_ed25519, Id::ED25519);
-        #[cfg(not(any(boringssl, libressl370, awslc)))]
+        #[cfg(not(any(libressl, boringssl, awslc)))]
         test_raw_private_key(PKey::generate_x448, Id::X448);
-        #[cfg(not(any(boringssl, libressl370, awslc)))]
+        #[cfg(not(any(libressl, boringssl, awslc)))]
         test_raw_private_key(PKey::generate_ed448, Id::ED448);
     }
 

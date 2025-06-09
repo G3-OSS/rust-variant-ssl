@@ -63,7 +63,7 @@ impl ErrorCode {
     /// The caller may retry the operation when lookup has completed.
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub const PENDING_CERTIFICATE: ErrorCode = ErrorCode(ffi::SSL_ERROR_PENDING_CERTIFICATE);
 
     /// The operation failed because a private key operation was unfinished.
@@ -71,7 +71,7 @@ impl ErrorCode {
     /// The caller may retry the operation when the private key operation is complete.
     ///
     /// Requires BoringSSL.
-    #[cfg(boringssl)]
+    #[cfg(any(boringssl, awslc))]
     pub const WANT_PRIVATE_KEY_OPERATION: ErrorCode =
         ErrorCode(ffi::SSL_ERROR_WANT_PRIVATE_KEY_OPERATION);
 

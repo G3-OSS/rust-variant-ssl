@@ -19,14 +19,17 @@ fn main() {
     println!("cargo:rustc-check-cfg=cfg(libressl261)");
     println!("cargo:rustc-check-cfg=cfg(libressl270)");
     println!("cargo:rustc-check-cfg=cfg(libressl271)");
+    println!("cargo:rustc-check-cfg=cfg(libressl272)");
     println!("cargo:rustc-check-cfg=cfg(libressl273)");
     println!("cargo:rustc-check-cfg=cfg(libressl280)");
+    println!("cargo:rustc-check-cfg=cfg(libressl282)");
     println!("cargo:rustc-check-cfg=cfg(libressl291)");
     println!("cargo:rustc-check-cfg=cfg(libressl310)");
     println!("cargo:rustc-check-cfg=cfg(libressl321)");
     println!("cargo:rustc-check-cfg=cfg(libressl332)");
     println!("cargo:rustc-check-cfg=cfg(libressl340)");
     println!("cargo:rustc-check-cfg=cfg(libressl350)");
+    println!("cargo:rustc-check-cfg=cfg(libressl352)");
     println!("cargo:rustc-check-cfg=cfg(libressl360)");
     println!("cargo:rustc-check-cfg=cfg(libressl361)");
     println!("cargo:rustc-check-cfg=cfg(libressl370)");

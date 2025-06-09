@@ -421,7 +421,7 @@ impl X509Ref {
 
     /// Returns the extensions of the certificate.
     #[corresponds(X509_get0_extensions)]
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(any(ossl111, libressl272, boringssl, awslc))]
     pub fn extensions(&self) -> Option<&StackRef<X509Extension>> {
         unsafe {
             let extensions = ffi::X509_get0_extensions(self.as_ptr());
@@ -431,7 +431,7 @@ impl X509Ref {
 
     /// Look for an extension with nid from the extensions of the certificate.
     #[corresponds(X509_get0_ext_by_NID)]
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
     pub fn get_extension_location(&self, nid: Nid, lastpos: Option<i32>) -> Option<i32> {
         let lastpos = lastpos.unwrap_or(-1);
         unsafe {
@@ -446,7 +446,7 @@ impl X509Ref {
 
     /// Retrieves extension loc from certificate.
     #[corresponds(X509_get_ext)]
-    #[cfg(any(ossl111, boringssl))]
+    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
     pub fn get_extension(&self, loc: i32) -> Result<&X509ExtensionRef, ErrorStack> {
         unsafe {
             let ext = cvt_p(ffi::X509_get_ext(self.as_ptr(), loc as _))?;
@@ -456,7 +456,7 @@ impl X509Ref {
 
     /// Returns the flag value of the key usage extension.
     #[corresponds(X509_get_key_usage)]
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, libressl352, boringssl, awslc))]
     pub fn key_usage(&self) -> Option<u32> {
         let flags = unsafe { ffi::X509_get_key_usage(self.as_ptr()) };
         if flags == u32::MAX {
@@ -669,7 +669,7 @@ impl X509Ref {
     ///
     /// Note that `0` return value stands for version 1, `1` for version 2 and so on.
     #[corresponds(X509_get_version)]
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, libressl282, boringssl, awslc))]
     #[allow(clippy::unnecessary_cast)]
     pub fn version(&self) -> i32 {
         unsafe { ffi::X509_get_version(self.as_ptr()) as i32 }
