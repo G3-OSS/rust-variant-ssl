@@ -81,11 +81,17 @@ fn main() {
         if version >= 0x2_07_01_00_0 {
             println!("cargo:rustc-cfg=libressl271");
         }
+        if version >= 0x2_07_02_00_0 {
+            println!("cargo:rustc-cfg=libressl272");
+        }
         if version >= 0x2_07_03_00_0 {
             println!("cargo:rustc-cfg=libressl273");
         }
         if version >= 0x2_08_00_00_0 {
             println!("cargo:rustc-cfg=libressl280");
+        }
+        if version >= 0x2_08_02_00_0 {
+            println!("cargo:rustc-cfg=libressl282");
         }
         if version >= 0x2_09_01_00_0 {
             println!("cargo:rustc-cfg=libressl291");
@@ -104,6 +110,9 @@ fn main() {
         }
         if version >= 0x3_05_00_00_0 {
             println!("cargo:rustc-cfg=libressl350");
+        }
+        if version >= 0x3_05_02_00_0 {
+            println!("cargo:rustc-cfg=libressl352");
         }
         if version >= 0x3_06_00_00_0 {
             println!("cargo:rustc-cfg=libressl360");
