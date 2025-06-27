@@ -16,6 +16,8 @@ tongsuo = ['ffi/tongsuo']
 bindgen = ['ffi/bindgen']
 boringssl = ["ffi/boringssl"]
 aws-lc = ["ffi/aws-lc"]
+aws-lc-fips = ["ffi/aws-lc-fips"]
+default = []
 
 [dependencies]
 bitflags = "2.2.1"
