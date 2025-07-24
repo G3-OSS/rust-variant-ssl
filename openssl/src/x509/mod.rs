@@ -594,7 +594,7 @@ impl X509Ref {
         ///
         /// This corresponds to [`X509_digest`].
         ///
-        /// [`X509_digest`]: https://www.openssl.org/docs/manmaster/man3/X509_digest.html
+        /// [`X509_digest`]: https://docs.openssl.org/manmaster/man3/X509_digest/
         digest,
         ffi::X509_digest
     }
@@ -604,7 +604,7 @@ impl X509Ref {
         ///
         /// This corresponds to [`X509_pubkey_digest`].
         ///
-        /// [`X509_pubkey_digest`]: https://www.openssl.org/docs/manmaster/man3/X509_pubkey_digest.html
+        /// [`X509_pubkey_digest`]: https://docs.openssl.org/manmaster/man3/X509_pubkey_digest/
         pubkey_digest,
         ffi::X509_pubkey_digest
     }
@@ -1331,7 +1331,7 @@ impl X509NameRef {
         ///
         /// This corresponds to [`X509_NAME_digest`].
         ///
-        /// [`X509_NAME_digest`]: https://www.openssl.org/docs/manmaster/man3/X509_NAME_digest.html
+        /// [`X509_NAME_digest`]: https://docs.openssl.org/manmaster/man3/X509_NAME_digest/
         digest,
         ffi::X509_NAME_digest
     }
@@ -1433,7 +1433,7 @@ impl X509Pubkey {
         ///
         /// This corresponds to [`d2i_X509_PUBKEY`].
         ///
-        /// [`d2i_X509_PUBKEY`]: https://www.openssl.org/docs/manmaster/crypto/d2i_X509_PUBKEY.html
+        /// [`d2i_X509_PUBKEY`]: https://docs.openssl.org/manmaster/crypto/d2i_X509_PUBKEY/
         from_der,
         X509Pubkey,
         ffi::d2i_X509_PUBKEY
@@ -1443,7 +1443,7 @@ impl X509Pubkey {
     ///
     /// This corresponds to [`X509_PUBKEY_set`].
     ///
-    /// [`X509_PUBKEY_set`]: https://www.openssl.org/docs/manmaster/crypto/X509_PUBKEY_set.html
+    /// [`X509_PUBKEY_set`]: https://docs.openssl.org/manmaster/crypto/X509_PUBKEY_set/
     pub fn from_pubkey<T>(key: &PKeyRef<T>) -> Result<Self, ErrorStack>
     where
         T: HasPublic,
@@ -1469,7 +1469,7 @@ impl X509PubkeyRef {
         ///
         /// This corresponds to [`i2d_X509_PUBKEY`].
         ///
-        /// [`i2d_X509_PUBKEY`]: https://www.openssl.org/docs/manmaster/crypto/i2d_X509_PUBKEY.html
+        /// [`i2d_X509_PUBKEY`]: https://docs.openssl.org/manmaster/crypto/i2d_X509_PUBKEY/
         to_der,
         ffi::i2d_X509_PUBKEY
     }
@@ -1478,7 +1478,7 @@ impl X509PubkeyRef {
     ///
     /// This corresponds to [`X509_PUBKEY_get"]
     ///
-    /// [`X509_PUBKEY_get`]: https://www.openssl.org/docs/manmaster/crypto/X509_PUBKEY_get.html
+    /// [`X509_PUBKEY_get`]: https://docs.openssl.org/manmaster/crypto/X509_PUBKEY_get/
     pub fn public_key(&self) -> Result<PKey<Public>, ErrorStack> {
         unsafe {
             let key = cvt_p(ffi::X509_PUBKEY_get(self.as_ptr()))?;
@@ -1490,7 +1490,7 @@ impl X509PubkeyRef {
     ///
     /// This corresponds to ['X509_PUBKEY_get0_param']
     ///
-    /// ['X509_PUBKEY_get0_param']: https://www.openssl.org/docs/man3.0/man3/X509_PUBKEY_get0_param.html
+    /// ['X509_PUBKEY_get0_param']: https://docs.openssl.org/man3.0/man3/X509_PUBKEY_get0_param/
     pub fn encoded_bytes(&self) -> Result<&[u8], ErrorStack> {
         unsafe {
             let mut pk = ptr::null_mut() as *const c_uchar;
@@ -1691,7 +1691,7 @@ impl X509ReqRef {
         ///
         /// This corresponds to [`X509_REQ_digest`].
         ///
-        /// [`X509_REQ_digest`]: https://www.openssl.org/docs/manmaster/man3/X509_REQ_digest.html
+        /// [`X509_REQ_digest`]: https://docs.openssl.org/manmaster/man3/X509_REQ_digest/
         digest,
         ffi::X509_REQ_digest
     }
@@ -1725,7 +1725,7 @@ impl X509ReqRef {
     ///
     /// This corresponds to [`X509_REQ_get_X509_PUBKEY"]
     ///
-    /// [`X509_REQ_get_X509_PUBKEY`]: https://www.openssl.org/docs/manmaster/crypto/X509_REQ_get_X509_PUBKEY.html
+    /// [`X509_REQ_get_X509_PUBKEY`]: https://docs.openssl.org/manmaster/crypto/X509_REQ_get_X509_PUBKEY/
     #[cfg(ossl110)]
     pub fn x509_pubkey(&self) -> Result<&X509PubkeyRef, ErrorStack> {
         unsafe {
@@ -2004,7 +2004,7 @@ impl X509CrlRef {
         ///
         /// This corresponds to [`X509_CRL_digest`].
         ///
-        /// [`X509_CRL_digest`]: https://www.openssl.org/docs/manmaster/man3/X509_CRL_digest.html
+        /// [`X509_CRL_digest`]: https://docs.openssl.org/manmaster/man3/X509_CRL_digest/
         digest,
         ffi::X509_CRL_digest
     }
