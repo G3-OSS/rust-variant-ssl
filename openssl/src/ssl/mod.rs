@@ -4494,7 +4494,7 @@ impl<S: Read + Write> SslStream<S> {
         }
     }
 
-    /// Like `read_ssl`, but takes a possibly-uninitialized slice.
+    /// Like `ssl_read`, but takes a possibly-uninitialized slice.
     ///
     /// # Safety
     ///
@@ -4581,6 +4581,23 @@ impl<S: Read + Write> SslStream<S> {
     /// Reads data from the stream, without removing it from the queue.
     #[corresponds(SSL_peek_ex)]
     pub fn ssl_peek(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
+        // SAFETY: `ssl_peek_uninit` does not de-initialize the buffer.
+        unsafe {
+            self.ssl_peek_uninit(util::from_raw_parts_mut(
+                buf.as_mut_ptr().cast::<MaybeUninit<u8>>(),
+                buf.len(),
+            ))
+        }
+    }
+
+    /// Like `ssl_peek`, but takes a possibly-uninitialized slice.
+    ///
+    /// # Safety
+    ///
+    /// No portion of `buf` will be de-initialized by this method. If the method returns `Ok(n)`,
+    /// then the first `n` bytes of `buf` are guaranteed to be initialized.
+    #[corresponds(SSL_peek_ex)]
+    pub fn ssl_peek_uninit(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<usize, Error> {
         cfg_if! {
             if #[cfg(any(ossl111, libressl350))] {
                 let mut readbytes = 0;
