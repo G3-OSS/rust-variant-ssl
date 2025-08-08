@@ -453,7 +453,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// This is only useful for DH keys.
     #[corresponds(EVP_PKEY_CTX_set_dh_paramgen_prime_len)]
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc_fips)))]
     #[inline]
     pub fn set_dh_paramgen_prime_len(&mut self, bits: u32) -> Result<(), ErrorStack> {
         unsafe {
@@ -470,7 +470,7 @@ impl<T> PkeyCtxRef<T> {
     ///
     /// This is only useful for DH keys.
     #[corresponds(EVP_PKEY_CTX_set_dh_paramgen_generator)]
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc_fips)))]
     #[inline]
     pub fn set_dh_paramgen_generator(&mut self, bits: u32) -> Result<(), ErrorStack> {
         unsafe {
@@ -1076,7 +1076,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(not(boringssl))]
+    #[cfg(not(any(boringssl, awslc_fips)))]
     fn dh_paramgen() {
         let mut ctx = PkeyCtx::new_id(Id::DH).unwrap();
         ctx.paramgen_init().unwrap();
