@@ -1,5 +1,5 @@
 #[cfg(feature = "bindgen")]
-use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
+use bindgen::callbacks::{ItemInfo, MacroParsingBehavior, ParseCallbacks};
 #[cfg(feature = "bindgen")]
 use bindgen::{MacroTypeVariation, RustTarget};
 use std::io::Write;
@@ -84,7 +84,7 @@ pub fn run(include_dirs: &[PathBuf]) {
 
     let mut builder = bindgen::builder()
         .parse_callbacks(Box::new(OpensslCallbacks))
-        .rust_target(RustTarget::Stable_1_71)
+        .rust_target(RustTarget::stable(71, 0).unwrap())
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .raw_line("#[cfg(windows)] use std::os::windows::raw::HANDLE;")
@@ -138,7 +138,7 @@ pub fn run_boringssl(include_dirs: &[PathBuf]) {
         .expect("Failed to write contents to boring_static_wrapper.h");
 
     let mut builder = bindgen::builder()
-        .rust_target(RustTarget::Stable_1_71)
+        .rust_target(RustTarget::stable(71, 0).unwrap())
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .derive_default(false)
@@ -261,7 +261,7 @@ pub fn run_awslc(include_dirs: &[PathBuf], symbol_prefix: Option<String>) {
         .expect("Failed to write contents to awslc_static_wrapper.h");
 
     let mut builder = bindgen::builder()
-        .rust_target(RustTarget::Stable_1_71)
+        .rust_target(RustTarget::stable(71, 0).unwrap())
         .ctypes_prefix("::libc")
         .raw_line("use libc::*;")
         .derive_default(false)
@@ -356,5 +356,13 @@ impl ParseCallbacks for OpensslCallbacks {
     // for now we'll continue hand-writing constants
     fn will_parse_macro(&self, _name: &str) -> MacroParsingBehavior {
         MacroParsingBehavior::Ignore
+    }
+
+    fn item_name(&self, item_info: ItemInfo) -> Option<String> {
+        match item_info.name {
+            // On NetBSD, "off_t" is generated as "__off_t".
+            "__off_t" => Some("off_t".to_string()),
+            _ => None,
+        }
     }
 }
