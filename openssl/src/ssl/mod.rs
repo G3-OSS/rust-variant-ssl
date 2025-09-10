@@ -1045,7 +1045,7 @@ impl SslContextBuilder {
     #[corresponds(SSL_CTX_set_dh_auto)]
     #[cfg(ossl300)]
     pub fn set_dh_auto(&mut self, onoff: bool) -> Result<(), ErrorStack> {
-        unsafe { cvt(ffi::SSL_CTX_set_dh_auto(self.as_ptr(), onoff as c_int)).map(|_| ()) }
+        unsafe { cvt(ffi::SSL_CTX_set_dh_auto(self.as_ptr(), onoff as c_int) as c_int).map(|_| ()) }
     }
 
     /// Sets the parameters to be used during ephemeral Diffie-Hellman key exchange.
@@ -1410,7 +1410,9 @@ impl SslContextBuilder {
     #[corresponds(SSL_CTX_set_ecdh_auto)]
     #[cfg(any(libressl, all(ossl102, not(ossl110))))]
     pub fn set_ecdh_auto(&mut self, onoff: bool) -> Result<(), ErrorStack> {
-        unsafe { cvt(ffi::SSL_CTX_set_ecdh_auto(self.as_ptr(), onoff as c_int)).map(|_| ()) }
+        unsafe {
+            cvt(ffi::SSL_CTX_set_ecdh_auto(self.as_ptr(), onoff as c_int) as c_int).map(|_| ())
+        }
     }
 
     /// Sets the options used by the context, returning the old set.
@@ -3000,7 +3002,7 @@ impl SslRef {
     #[corresponds(SSL_set_dh_auto)]
     #[cfg(ossl300)]
     pub fn set_dh_auto(&mut self, onoff: bool) -> Result<(), ErrorStack> {
-        unsafe { cvt(ffi::SSL_set_dh_auto(self.as_ptr(), onoff as c_int)).map(|_| ()) }
+        unsafe { cvt(ffi::SSL_set_dh_auto(self.as_ptr(), onoff as c_int) as c_int).map(|_| ()) }
     }
 
     /// Like [`SslContextBuilder::set_tmp_dh`].
@@ -3042,7 +3044,7 @@ impl SslRef {
     #[corresponds(SSL_set_ecdh_auto)]
     #[cfg(any(all(ossl102, not(ossl110)), libressl))]
     pub fn set_ecdh_auto(&mut self, onoff: bool) -> Result<(), ErrorStack> {
-        unsafe { cvt(ffi::SSL_set_ecdh_auto(self.as_ptr(), onoff as c_int)).map(|_| ()) }
+        unsafe { cvt(ffi::SSL_set_ecdh_auto(self.as_ptr(), onoff as c_int) as c_int).map(|_| ()) }
     }
 
     /// Like [`SslContextBuilder::set_alpn_protos`].
