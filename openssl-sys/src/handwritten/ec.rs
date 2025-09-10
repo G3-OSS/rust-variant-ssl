@@ -26,6 +26,8 @@ extern "C" {
     #[cfg(not(libressl410))]
     pub fn EC_GROUP_new(meth: *const EC_METHOD) -> *mut EC_GROUP;
 
+    pub fn EC_GROUP_dup(group: *const EC_GROUP) -> *mut EC_GROUP;
+
     pub fn EC_GROUP_free(group: *mut EC_GROUP);
 
     pub fn EC_GROUP_get_order(
@@ -114,6 +116,14 @@ extern "C" {
         p: *const EC_POINT,
         x: *mut BIGNUM,
         y: *mut BIGNUM,
+        ctx: *mut BN_CTX,
+    ) -> c_int;
+    #[cfg(any(ossl111, boringssl, libressl350, awslc))]
+    pub fn EC_POINT_set_affine_coordinates(
+        group: *const EC_GROUP,
+        p: *mut EC_POINT,
+        x: *const BIGNUM,
+        y: *const BIGNUM,
         ctx: *mut BN_CTX,
     ) -> c_int;
 
