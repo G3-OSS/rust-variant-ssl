@@ -376,8 +376,6 @@ pub const SSL_CTRL_SET_SIGALGS_LIST: c_int = 98;
 pub const SSL_CTRL_SET_VERIFY_CERT_STORE: c_int = 106;
 #[cfg(ossl300)]
 pub const SSL_CTRL_GET_PEER_TMP_KEY: c_int = 109;
-#[cfg(ossl300)]
-pub const SSL_CTRL_SET_DH_AUTO: c_int = 118;
 #[cfg(ossl110)]
 pub const SSL_CTRL_SET_DH_AUTO: c_int = 118;
 #[cfg(ossl110)]
@@ -394,22 +392,12 @@ pub const SSL_CTRL_GET_MAX_PROTO_VERSION: c_int = 131;
 #[cfg(ossl300)]
 pub const SSL_CTRL_GET_TMP_KEY: c_int = 133;
 
-#[cfg(ossl300)]
-pub unsafe fn SSL_CTX_set_dh_auto(ctx: *mut SSL_CTX, onoff: c_int) -> c_int {
-    SSL_CTX_ctrl(ctx, SSL_CTRL_SET_DH_AUTO, onoff as c_long, ptr::null_mut()) as c_int
-}
-
 pub unsafe fn SSL_CTX_set_tmp_dh(ctx: *mut SSL_CTX, dh: *mut DH) -> c_long {
     SSL_CTX_ctrl(ctx, SSL_CTRL_SET_TMP_DH, 0, dh as *mut c_void)
 }
 
 pub unsafe fn SSL_CTX_set_tmp_ecdh(ctx: *mut SSL_CTX, key: *mut EC_KEY) -> c_long {
     SSL_CTX_ctrl(ctx, SSL_CTRL_SET_TMP_ECDH, 0, key as *mut c_void)
-}
-
-#[cfg(ossl300)]
-pub unsafe fn SSL_set_dh_auto(ssl: *mut SSL, onoff: c_int) -> c_int {
-    SSL_ctrl(ssl, SSL_CTRL_SET_DH_AUTO, onoff as c_long, ptr::null_mut()) as c_int
 }
 
 pub unsafe fn SSL_set_tmp_dh(ssl: *mut SSL, dh: *mut DH) -> c_long {
