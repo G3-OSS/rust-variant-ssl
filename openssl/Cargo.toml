@@ -1,6 +1,6 @@
 [package]
 name = "variant-ssl"
-version = "0.17.5"
+version = "0.17.6"
 license = "Apache-2.0"
 description = "Bindings for OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
 repository = "https://github.com/G3-OSS/rust-variant-ssl"
@@ -27,7 +27,7 @@ libc = "0.2"
 once_cell = "1.5.2"
 
 openssl-macros = { version = "0.1.1" }
-ffi = { package = "variant-ssl-sys", version = "0.17.5", path = "../openssl-sys" }
+ffi = { package = "variant-ssl-sys", version = "0.17.6", path = "../openssl-sys" }
 
 [dev-dependencies]
 hex = "0.4"
