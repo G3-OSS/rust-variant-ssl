@@ -512,6 +512,7 @@ cfg_if! {
         }
     }
 }
+#[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 const_ptr_api! {
     extern "C" {
         pub fn EVP_PKEY_get1_RSA(k: #[const_ptr_if(libressl420)] EVP_PKEY) -> *mut RSA;
@@ -520,6 +521,7 @@ const_ptr_api! {
         pub fn EVP_PKEY_get1_EC_KEY(k: #[const_ptr_if(libressl420)] EVP_PKEY) -> *mut EC_KEY;
     }
 }
+#[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 extern "C" {
     pub fn EVP_PKEY_assign(pkey: *mut EVP_PKEY, typ: c_int, key: *mut c_void) -> c_int;
 
@@ -528,6 +530,10 @@ extern "C" {
     pub fn EVP_PKEY_set1_DH(k: *mut EVP_PKEY, k: *mut DH) -> c_int;
     pub fn EVP_PKEY_set1_EC_KEY(k: *mut EVP_PKEY, k: *mut EC_KEY) -> c_int;
 
+    pub fn EVP_PKEY_cmp(a: *const EVP_PKEY, b: *const EVP_PKEY) -> c_int;
+}
+
+extern "C" {
     pub fn EVP_PKEY_new() -> *mut EVP_PKEY;
     pub fn EVP_PKEY_free(k: *mut EVP_PKEY);
     #[cfg(any(ossl110, libressl270))]
@@ -560,8 +566,6 @@ extern "C" {
         length: c_long,
     ) -> *mut EVP_PKEY;
 
-    #[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
-    pub fn EVP_PKEY_cmp(a: *const EVP_PKEY, b: *const EVP_PKEY) -> c_int;
     #[cfg(ossl300)]
     pub fn EVP_PKEY_eq(a: *const EVP_PKEY, b: *const EVP_PKEY) -> c_int;
     #[cfg(ossl300)]

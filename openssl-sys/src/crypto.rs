@@ -124,4 +124,5 @@ cfg_if! {
     }
 }
 
+#[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 pub const CRYPTO_LOCK: c_int = 1;

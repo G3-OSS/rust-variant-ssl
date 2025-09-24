@@ -881,6 +881,7 @@ extern "C" {
     pub fn SSL_get_ex_data_X509_STORE_CTX_idx() -> c_int;
 }
 
+#[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 extern "C" {
     pub fn SSL_CTX_set_info_callback(
         ctx: *mut SSL_CTX,
