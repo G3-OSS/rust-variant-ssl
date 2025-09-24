@@ -22,7 +22,7 @@ bindgen = ["dep:bindgen", "aws-lc-sys?/bindgen"]
 [dependencies]
 libc = "0.2"
 bssl-sys = { package = "bssl-cmake-sys", version = "0.1.2407220", optional = true }
-aws-lc-sys = { version = "0.31.0", optional = true, features = ["ssl"] }
+aws-lc-sys = { version = "0.32.0", optional = true, features = ["ssl"] }
 aws-lc-fips-sys = { version = "0.13", features = ["ssl", "bindgen"], optional = true }
 
 [build-dependencies]
