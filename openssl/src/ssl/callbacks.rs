@@ -23,16 +23,16 @@ use crate::mac_ctx::MacCtxRef;
 use crate::pkey::Params;
 #[cfg(any(ossl102, libressl261, boringssl, awslc))]
 use crate::ssl::AlpnError;
+#[cfg(any(ossl111, awslc))]
+use crate::ssl::ClientHelloError;
+#[cfg(ossl111)]
+use crate::ssl::ExtensionContext;
 use crate::ssl::{
     try_get_session_ctx_index, SniError, Ssl, SslAlert, SslContext, SslContextRef, SslRef,
     SslSession, SslSessionRef, TicketKeyStatus,
 };
 #[cfg(any(boringssl, awslc))]
 use crate::ssl::{ClientHello, SelectCertError};
-#[cfg(any(ossl111, awslc))]
-use crate::ssl::ClientHelloError;
-#[cfg(ossl111)]
-use crate::ssl::ExtensionContext;
 use crate::util;
 use crate::util::ForeignTypeRefExt;
 #[cfg(ossl111)]
