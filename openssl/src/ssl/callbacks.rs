@@ -23,7 +23,7 @@ use crate::mac_ctx::MacCtxRef;
 use crate::pkey::Params;
 #[cfg(any(ossl102, libressl261, boringssl, awslc))]
 use crate::ssl::AlpnError;
-#[cfg(any(ossl111, awslc))]
+#[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 use crate::ssl::ClientHelloError;
 #[cfg(ossl111)]
 use crate::ssl::ExtensionContext;
@@ -710,7 +710,7 @@ where
     }
 }
 
-#[cfg(any(ossl111, awslc))]
+#[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 pub unsafe extern "C" fn raw_client_hello<F>(
     ssl: *mut ffi::SSL,
     al: *mut c_int,

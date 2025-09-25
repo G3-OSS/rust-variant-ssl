@@ -687,11 +687,11 @@ impl AlpnError {
 /// An error returned from a client hello callback.
 ///
 /// Requires AWS-LC or OpenSSL 1.1.1 or newer.
-#[cfg(any(ossl111, awslc))]
+#[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct ClientHelloError(c_int);
 
-#[cfg(any(ossl111, awslc))]
+#[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 impl ClientHelloError {
     /// Terminate the connection.
     pub const ERROR: ClientHelloError = ClientHelloError(ffi::SSL_CLIENT_HELLO_ERROR);
@@ -2154,7 +2154,7 @@ impl SslContextBuilder {
     ///
     /// Requires AWS-LC or OpenSSL 1.1.1 or newer.
     #[corresponds(SSL_CTX_set_client_hello_cb)]
-    #[cfg(any(ossl111, awslc))]
+    #[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
     pub fn set_client_hello_callback<F>(&mut self, callback: F)
     where
         F: Fn(&mut SslRef, &mut SslAlert) -> Result<(), ClientHelloError> + 'static + Sync + Send,
