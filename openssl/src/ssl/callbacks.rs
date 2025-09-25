@@ -29,8 +29,10 @@ use crate::ssl::{
 };
 #[cfg(any(boringssl, awslc))]
 use crate::ssl::{ClientHello, SelectCertError};
+#[cfg(any(ossl111, awslc))]
+use crate::ssl::ClientHelloError;
 #[cfg(ossl111)]
-use crate::ssl::{ClientHelloError, ExtensionContext};
+use crate::ssl::ExtensionContext;
 use crate::util;
 use crate::util::ForeignTypeRefExt;
 #[cfg(ossl111)]
@@ -708,7 +710,7 @@ where
     }
 }
 
-#[cfg(ossl111)]
+#[cfg(any(ossl111, awslc))]
 pub unsafe extern "C" fn raw_client_hello<F>(
     ssl: *mut ffi::SSL,
     al: *mut c_int,
