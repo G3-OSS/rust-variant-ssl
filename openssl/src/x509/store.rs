@@ -51,7 +51,7 @@ use crate::ssl::SslFiletype;
 #[cfg(any(ossl300, boringssl))]
 use crate::stack::Stack;
 use crate::util::ForeignTypeRefExt;
-#[cfg(any(ossl102, boringssl, libressl261, awslc))]
+#[cfg(any(ossl102, boringssl, libressl, awslc))]
 use crate::x509::verify::{X509VerifyFlags, X509VerifyParamRef};
 #[cfg(any(ossl330, boringssl))]
 use crate::x509::X509Object;
@@ -124,7 +124,7 @@ impl X509StoreBuilderRef {
 
     /// Sets certificate chain validation related flags.
     #[corresponds(X509_STORE_set_flags)]
-    #[cfg(any(ossl102, boringssl, libressl261, awslc))]
+    #[cfg(any(ossl102, boringssl, libressl, awslc))]
     pub fn set_flags(&mut self, flags: X509VerifyFlags) -> Result<(), ErrorStack> {
         unsafe { cvt(ffi::X509_STORE_set_flags(self.as_ptr(), flags.bits())).map(|_| ()) }
     }
@@ -138,7 +138,7 @@ impl X509StoreBuilderRef {
 
     /// Sets certificate chain validation related parameters.
     #[corresponds[X509_STORE_set1_param]]
-    #[cfg(any(ossl102, boringssl, libressl261, awslc))]
+    #[cfg(any(ossl102, boringssl, libressl, awslc))]
     pub fn set_param(&mut self, param: &X509VerifyParamRef) -> Result<(), ErrorStack> {
         unsafe { cvt(ffi::X509_STORE_set1_param(self.as_ptr(), param.as_ptr())).map(|_| ()) }
     }

@@ -25,7 +25,7 @@ fn main() {
             cfg.flag("/wd4090");
         }
 
-        // https://github.com/sfackler/rust-openssl/issues/889
+        // https://github.com/rust-openssl/rust-openssl/issues/889
         cfg.define("WIN32_LEAN_AND_MEAN", None);
     }
 

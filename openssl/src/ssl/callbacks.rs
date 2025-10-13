@@ -21,7 +21,7 @@ use crate::hmac::HMacCtxRef;
 #[cfg(ossl300)]
 use crate::mac_ctx::MacCtxRef;
 use crate::pkey::Params;
-#[cfg(any(ossl102, libressl261, boringssl, awslc))]
+#[cfg(any(ossl102, libressl, boringssl, awslc))]
 use crate::ssl::AlpnError;
 #[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 use crate::ssl::ClientHelloError;
@@ -422,7 +422,7 @@ pub unsafe extern "C" fn raw_remove_session<F>(
 }
 
 cfg_if! {
-    if #[cfg(any(ossl110, libressl280, boringssl, awslc))] {
+    if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
         type DataPtr = *const c_uchar;
     } else {
         type DataPtr = *mut c_uchar;
@@ -558,7 +558,7 @@ where
 
 #[cfg(not(any(boringssl, awslc)))]
 cfg_if! {
-    if #[cfg(any(ossl110, libressl280))] {
+    if #[cfg(any(ossl110, libressl))] {
         type CookiePtr = *const c_uchar;
     } else {
         type CookiePtr = *mut c_uchar;

@@ -10,7 +10,7 @@ pub type bio_info_cb =
     Option<unsafe extern "C" fn(*mut BIO, c_int, *const c_char, c_int, c_long, c_long)>;
 
 cfg_if! {
-    if #[cfg(any(ossl110, libressl280))] {
+    if #[cfg(any(ossl110, libressl))] {
         pub enum BIO_METHOD {}
     } else {
         #[repr(C)]
@@ -31,18 +31,18 @@ cfg_if! {
 
 const_ptr_api! {
     extern "C" {
-        pub fn BIO_s_file() -> #[const_ptr_if(any(ossl110, libressl280))] BIO_METHOD;
-        pub fn BIO_new(type_: #[const_ptr_if(any(ossl110, libressl280))] BIO_METHOD) -> *mut BIO;
+        pub fn BIO_s_file() -> #[const_ptr_if(any(ossl110, libressl))] BIO_METHOD;
+        pub fn BIO_new(type_: #[const_ptr_if(any(ossl110, libressl))] BIO_METHOD) -> *mut BIO;
     }
 }
 extern "C" {
     #[cfg(not(osslconf = "OPENSSL_NO_STDIO"))]
     pub fn BIO_new_fp(stream: *mut FILE, close_flag: c_int) -> *mut BIO;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_set_data(a: *mut BIO, data: *mut c_void);
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_get_data(a: *mut BIO) -> *mut c_void;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_set_init(a: *mut BIO, init: c_int);
     pub fn BIO_write(b: *mut BIO, buf: *const c_void, len: c_int) -> c_int;
     pub fn BIO_read(b: *mut BIO, buf: *mut c_void, len: c_int) -> c_int;
@@ -59,8 +59,8 @@ extern "C" {
 
 const_ptr_api! {
     extern "C" {
-        pub fn BIO_s_mem() -> #[const_ptr_if(any(ossl110, libressl280))] BIO_METHOD;
-        pub fn BIO_new_mem_buf(buf: #[const_ptr_if(any(ossl102, libressl280))] c_void, len: c_int) -> *mut BIO;
+        pub fn BIO_s_mem() -> #[const_ptr_if(any(ossl110, libressl))] BIO_METHOD;
+        pub fn BIO_new_mem_buf(buf: #[const_ptr_if(any(ossl102, libressl))] c_void, len: c_int) -> *mut BIO;
     }
 }
 
@@ -68,9 +68,9 @@ extern "C" {
     #[cfg(not(osslconf = "OPENSSL_NO_SOCK"))]
     pub fn BIO_new_socket(sock: c_int, close_flag: c_int) -> *mut BIO;
 
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_new(type_: c_int, name: *const c_char) -> *mut BIO_METHOD;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_free(biom: *mut BIO_METHOD);
 }
 
