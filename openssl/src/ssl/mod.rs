@@ -83,7 +83,6 @@ use crate::stack::{Stack, StackRef, Stackable};
 use crate::util;
 use crate::util::{ForeignTypeExt, ForeignTypeRefExt};
 use crate::x509::store::{X509Store, X509StoreBuilderRef, X509StoreRef};
-#[cfg(any(ossl102, boringssl, libressl, awslc))]
 use crate::x509::verify::X509VerifyParamRef;
 use crate::x509::{X509Name, X509Ref, X509StoreContextRef, X509VerifyResult, X509};
 use crate::{cvt, cvt_n, cvt_p, init};
@@ -229,20 +228,14 @@ bitflags! {
 
         /// Disables the use of TLSv1.3.
         ///
-        /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
-        #[cfg(any(boringssl, ossl111, libressl340, awslc))]
+        /// Requires AWS-LC or BoringSSL or OpenSSL 1.1.1 or newer or LibreSSL.
+        #[cfg(any(boringssl, ossl111, libressl, awslc))]
         const NO_TLSV1_3 = ffi::SSL_OP_NO_TLSv1_3 as SslOptionsRepr;
 
         /// Disables the use of DTLSv1.0
-        ///
-        /// Requires OpenSSL 1.0.2 or LibreSSL 3.3.2 or newer.
-        #[cfg(any(boringssl, ossl102, ossl110, libressl332, awslc))]
         const NO_DTLSV1 = ffi::SSL_OP_NO_DTLSv1 as SslOptionsRepr;
 
         /// Disables the use of DTLSv1.2.
-        ///
-        /// Requires OpenSSL 1.0.2 or LibreSSL 3.3.2 or newer.
-        #[cfg(any(boringssl, ossl102, ossl110, libressl332, awslc))]
         const NO_DTLSV1_2 = ffi::SSL_OP_NO_DTLSv1_2 as SslOptionsRepr;
 
         /// Disables the use of all (D)TLS protocol versions.
@@ -260,7 +253,7 @@ bitflags! {
         ///
         /// let options = SslOptions::NO_SSL_MASK & !SslOptions::NO_TLSV1_2;
         /// ```
-        #[cfg(any(ossl102, ossl110))]
+        #[cfg(ossl102)]
         const NO_SSL_MASK = ffi::SSL_OP_NO_SSL_MASK as SslOptionsRepr;
 
         /// Disallow all renegotiation in TLSv1.2 and earlier.
@@ -673,6 +666,8 @@ impl SslAlert {
 }
 
 /// An error returned from an ALPN selection callback.
+///
+/// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct AlpnError(c_int);
 
@@ -777,8 +772,8 @@ impl SslVersion {
 
     /// TLSv1.3
     ///
-    /// Requires AWS-LC or BoringSSL or OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
-    #[cfg(any(ossl111, libressl340, boringssl, awslc))]
+    /// Requires AWS-LC or BoringSSL or OpenSSL 1.1.1 or newer or LibreSSL.
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub const TLS1_3: SslVersion = SslVersion(ffi::TLS1_3_VERSION);
 
     #[cfg(tongsuo)]
@@ -792,7 +787,6 @@ impl SslVersion {
     /// DTLSv1.2
     ///
     /// DTLS 1.2 corresponds to TLS 1.2 to harmonize versions. There was never a DTLS 1.1.
-    #[cfg(any(ossl102, libressl332, boringssl, awslc))]
     pub const DTLS1_2: SslVersion = SslVersion(ffi::DTLS1_2_VERSION);
 }
 
@@ -1390,9 +1384,9 @@ impl SslContextBuilder {
     /// The format consists of TLSv1.3 cipher suite names separated by `:` characters in order of
     /// preference.
     ///
-    /// Requires AWS-LC or OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires AWS-LC or OpenSSL 1.1.1 or LibreSSL or newer.
     #[corresponds(SSL_CTX_set_ciphersuites)]
-    #[cfg(any(ossl111, libressl340, awslc))]
+    #[cfg(any(ossl111, libressl, awslc))]
     pub fn set_ciphersuites(&mut self, cipher_list: &str) -> Result<(), ErrorStack> {
         let cipher_list = CString::new(cipher_list).unwrap();
         unsafe {
@@ -1526,7 +1520,6 @@ impl SslContextBuilder {
     ///
     /// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_CTX_set_alpn_protos)]
-    #[cfg(any(ossl102, libressl, boringssl, awslc))]
     pub fn set_alpn_protos(&mut self, protocols: &[u8]) -> Result<(), ErrorStack> {
         unsafe {
             assert!(protocols.len() <= c_uint::MAX as usize);
@@ -1608,7 +1601,6 @@ impl SslContextBuilder {
     ///
     /// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_CTX_get0_param)]
-    #[cfg(any(ossl102, boringssl, libressl, awslc))]
     pub fn verify_param(&self) -> &X509VerifyParamRef {
         unsafe { X509VerifyParamRef::from_ptr(ffi::SSL_CTX_get0_param(self.as_ptr())) }
     }
@@ -1617,7 +1609,6 @@ impl SslContextBuilder {
     ///
     /// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_CTX_get0_param)]
-    #[cfg(any(ossl102, boringssl, libressl, awslc))]
     pub fn verify_param_mut(&mut self) -> &mut X509VerifyParamRef {
         unsafe { X509VerifyParamRef::from_ptr_mut(ffi::SSL_CTX_get0_param(self.as_ptr())) }
     }
@@ -2116,9 +2107,9 @@ impl SslContextBuilder {
     ///
     /// Defaults to 0.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_CTX_set_max_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn set_max_early_data(&mut self, bytes: u32) -> Result<(), ErrorStack> {
         if unsafe { ffi::SSL_CTX_set_max_early_data(self.as_ptr(), bytes) } == 1 {
             Ok(())
@@ -2337,9 +2328,9 @@ impl SslContextRef {
 
     /// Returns the private key associated with this `SslContext`, if present.
     ///
-    /// Requires OpenSSL 1.0.2 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.0.2 or newer or LibreSSL.
     #[corresponds(SSL_CTX_get0_privatekey)]
-    #[cfg(any(ossl102, libressl340))]
+    #[cfg(any(ossl102, libressl))]
     pub fn private_key(&self) -> Option<&PKeyRef<Private>> {
         unsafe {
             let ptr = ffi::SSL_CTX_get0_privatekey(self.as_ptr());
@@ -2378,9 +2369,9 @@ impl SslContextRef {
 
     /// Gets the maximum amount of early data that will be accepted on incoming connections.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_CTX_get_max_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn max_early_data(&self) -> u32 {
         unsafe { ffi::SSL_CTX_get_max_early_data(self.as_ptr()) }
     }
@@ -2692,9 +2683,9 @@ impl SslSessionRef {
 
     /// Gets the maximum amount of early data that can be sent on this session.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_SESSION_get_max_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn max_early_data(&self) -> u32 {
         unsafe { ffi::SSL_SESSION_get_max_early_data(self.as_ptr()) }
     }
@@ -3065,7 +3056,6 @@ impl SslRef {
     ///
     /// [`SslContextBuilder::set_alpn_protos`]: struct.SslContextBuilder.html#method.set_alpn_protos
     #[corresponds(SSL_set_alpn_protos)]
-    #[cfg(any(ossl102, libressl, boringssl, awslc))]
     pub fn set_alpn_protos(&mut self, protocols: &[u8]) -> Result<(), ErrorStack> {
         unsafe {
             assert!(protocols.len() <= c_uint::MAX as usize);
@@ -3214,7 +3204,6 @@ impl SslRef {
     ///
     /// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_get0_alpn_selected)]
-    #[cfg(any(ossl102, libressl, boringssl, awslc))]
     pub fn selected_alpn_protocol(&self) -> Option<&[u8]> {
         unsafe {
             let mut data: *const c_uchar = ptr::null();
@@ -3342,7 +3331,6 @@ impl SslRef {
     ///
     /// Requires AWS-LC or BoringSSL or LibreSSL or OpenSSL 1.0.2 or newer.
     #[corresponds(SSL_get0_param)]
-    #[cfg(any(ossl102, boringssl, libressl, awslc))]
     pub fn param_mut(&mut self) -> &mut X509VerifyParamRef {
         unsafe { X509VerifyParamRef::from_ptr_mut(ffi::SSL_get0_param(self.as_ptr())) }
     }
@@ -3660,9 +3648,9 @@ impl SslRef {
 
     /// Sets the maximum amount of early data that will be accepted on this connection.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_set_max_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn set_max_early_data(&mut self, bytes: u32) -> Result<(), ErrorStack> {
         if unsafe { ffi::SSL_set_max_early_data(self.as_ptr(), bytes) } == 1 {
             Ok(())
@@ -3673,9 +3661,9 @@ impl SslRef {
 
     /// Gets the maximum amount of early data that can be sent on this connection.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_get_max_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn max_early_data(&self) -> u32 {
         unsafe { ffi::SSL_get_max_early_data(self.as_ptr()) }
     }
@@ -4044,7 +4032,7 @@ impl SslRef {
     /// certificate, and the remainder forming the chain of certificates up to and including the
     /// trusted root certificate.
     #[corresponds(SSL_use_certificate_chain_file)]
-    #[cfg(any(ossl110, libressl332))]
+    #[cfg(any(ossl110, libressl))]
     pub fn set_certificate_chain_file<P: AsRef<Path>>(
         &mut self,
         path: P,
@@ -4119,9 +4107,9 @@ impl SslRef {
     /// The format consists of TLSv1.3 cipher suite names separated by `:` characters in order of
     /// preference.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_set_ciphersuites)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn set_ciphersuites(&mut self, cipher_list: &str) -> Result<(), ErrorStack> {
         let cipher_list = CString::new(cipher_list).unwrap();
         unsafe {
@@ -4356,9 +4344,9 @@ impl<S: Read + Write> SslStream<S> {
     ///
     /// Returns `Ok(0)` if all early data has been read.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_read_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn read_early_data(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
         let mut read = 0;
         let ret = unsafe {
@@ -4382,9 +4370,9 @@ impl<S: Read + Write> SslStream<S> {
     /// Useful for reducing latency, but vulnerable to replay attacks. Call
     /// [`SslRef::set_connect_state`] first.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_write_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn write_early_data(&mut self, buf: &[u8]) -> Result<usize, Error> {
         let mut written = 0;
         let ret = unsafe {
@@ -4517,7 +4505,7 @@ impl<S: Read + Write> SslStream<S> {
     #[corresponds(SSL_read_ex)]
     pub fn ssl_read_uninit(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<usize, Error> {
         cfg_if! {
-            if #[cfg(any(ossl111, libressl350))] {
+            if #[cfg(any(ossl111, libressl))] {
                 let mut readbytes = 0;
                 let ret = unsafe {
                     ffi::SSL_read_ex(
@@ -4558,7 +4546,7 @@ impl<S: Read + Write> SslStream<S> {
     #[corresponds(SSL_write_ex)]
     pub fn ssl_write(&mut self, buf: &[u8]) -> Result<usize, Error> {
         cfg_if! {
-            if #[cfg(any(ossl111, libressl350))] {
+            if #[cfg(any(ossl111, libressl))] {
                 let mut written = 0;
                 let ret = unsafe {
                     ffi::SSL_write_ex(
@@ -4613,7 +4601,7 @@ impl<S: Read + Write> SslStream<S> {
     #[corresponds(SSL_peek_ex)]
     pub fn ssl_peek_uninit(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<usize, Error> {
         cfg_if! {
-            if #[cfg(any(ossl111, libressl350))] {
+            if #[cfg(any(ossl111, libressl))] {
                 let mut readbytes = 0;
                 let ret = unsafe {
                     ffi::SSL_peek_ex(
@@ -4906,9 +4894,9 @@ where
     ///
     /// Returns `Ok(0)` if all early data has been read.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_read_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn read_early_data(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
         self.inner.read_early_data(buf)
     }
@@ -4918,9 +4906,9 @@ where
     /// Useful for reducing latency, but vulnerable to replay attacks. Call
     /// `set_connect_state` first.
     ///
-    /// Requires OpenSSL 1.1.1 or LibreSSL 3.4.0 or newer.
+    /// Requires OpenSSL 1.1.1 or newer or LibreSSL.
     #[corresponds(SSL_write_early_data)]
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn write_early_data(&mut self, buf: &[u8]) -> Result<usize, Error> {
         self.inner.write_early_data(buf)
     }

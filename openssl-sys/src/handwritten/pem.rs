@@ -99,14 +99,12 @@ extern "C" {
         u: *mut c_void,
     ) -> *mut PKCS7;
 
-    #[cfg(ossl101)]
     pub fn PEM_read_bio_CMS(
         bio: *mut BIO,
         out: *mut *mut CMS_ContentInfo,
         callback: pem_password_cb,
         user_data: *mut c_void,
     ) -> *mut CMS_ContentInfo;
-    #[cfg(ossl101)]
     pub fn PEM_write_bio_CMS(bio: *mut BIO, cms: *const CMS_ContentInfo) -> c_int;
 }
 

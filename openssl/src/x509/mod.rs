@@ -40,7 +40,6 @@ use crate::util::{self, ForeignTypeExt, ForeignTypeRefExt};
 use crate::{cvt, cvt_n, cvt_p, cvt_p_const};
 use openssl_macros::corresponds;
 
-#[cfg(any(ossl102, boringssl, libressl, awslc))]
 pub mod verify;
 
 pub mod extension;
@@ -456,7 +455,7 @@ impl X509Ref {
 
     /// Returns the flag value of the key usage extension.
     #[corresponds(X509_get_key_usage)]
-    #[cfg(any(ossl110, libressl352, boringssl, awslc))]
+    #[cfg(any(ossl110, libressl, boringssl, awslc))]
     pub fn key_usage(&self) -> Option<u32> {
         let flags = unsafe { ffi::X509_get_key_usage(self.as_ptr()) };
         if flags == u32::MAX {
@@ -1129,7 +1128,6 @@ impl X509NameBuilder {
 
     /// Add a name entry
     #[corresponds(X509_NAME_add_entry)]
-    #[cfg(any(ossl101, libressl350))]
     pub fn append_entry(&mut self, ne: &X509NameEntryRef) -> std::result::Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::X509_NAME_add_entry(
@@ -2539,7 +2537,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(boringssl, ossl110, libressl350, awslc))] {
+    if #[cfg(any(boringssl, ossl110, libressl, awslc))] {
         use ffi::{
             X509_ALGOR_get0, ASN1_STRING_get0_data, X509_STORE_CTX_get0_chain, X509_set1_notAfter,
             X509_set1_notBefore, X509_REQ_get_version, X509_REQ_get_subject_name,
@@ -2594,7 +2592,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(ossl110, libressl350, boringssl, awslc))] {
+    if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
         use ffi::X509_OBJECT_free;
     } else {
         #[allow(bad_style)]
@@ -2606,7 +2604,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(ossl110, libressl350, boringssl, awslc))] {
+    if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
         use ffi::{
             X509_CRL_get_issuer, X509_CRL_get0_nextUpdate, X509_CRL_get0_lastUpdate,
             X509_CRL_get_REVOKED,

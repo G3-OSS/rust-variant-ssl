@@ -72,7 +72,7 @@ fn main() {
         .header("openssl/x509_vfy.h");
 
     if let Some(version) = libressl_version {
-        cfg.header("openssl/poly1305.h");
+        cfg.header("openssl/cms.h").header("openssl/poly1305.h");
         if version >= 0x30600000 {
             cfg.header("openssl/kdf.h");
         }

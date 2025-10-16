@@ -2,6 +2,33 @@
 
 ## [Unreleased]
 
+## [v0.10.74] - 2025-10-14
+
+### Added
+
+* Added parameter generation support (`PkeyCtx::paramgen` and `PkeyCtx::paramgen_init`).
+* Added key generation methods for RSA, DSA, DH, and EC via `PkeyCtx`.
+* Added `Cipher::get_protocol_id`.
+* Added `EcPointRef::set_affine_coordinates`.
+* Added `EcGroup::order_bits` on BoringSSL, LibreSSL, and AWS-LC.
+* Added `X509::append_entry` on BoringSSL and AWS-LC.
+* Added XOF squeeze support on AWS-LC.
+* Added argon2d and argon2i KDF variants.
+
+### Changed
+
+* Bumped MSRV to 1.70.
+* The repository has moved to the rust-openssl github organization.
+
+### Fixed
+
+* Disabled AES-CFB128 ciphers for BoringSSL.
+
+### Removed
+
+* Removed support for OpenSSL <1.0.2.
+* Removed support for LibreSSL <3.5.
+
 ## [v0.10.73] - 2025-05-28
 
 ### Fixed
@@ -979,7 +1006,8 @@
 
 Look at the [release tags] for information about older releases.
 
-[Unreleased]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.73...master
+[Unreleased]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.74...master
+[v0.10.74]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.73...openssl-v0.10.74
 [v0.10.73]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.72...openssl-v0.10.73
 [v0.10.72]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.71...openssl-v0.10.72
 [v0.10.71]: https://github.com/rust-openssl/rust-openssl/compare/openssl-v0.10.70...openssl-v0.10.71

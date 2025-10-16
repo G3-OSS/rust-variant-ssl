@@ -56,7 +56,7 @@ extern "C" {
 
     pub fn EC_GROUP_get_degree(group: *const EC_GROUP) -> c_int;
 
-    #[cfg(ossl110)]
+    #[cfg(any(ossl110, libressl))]
     pub fn EC_GROUP_order_bits(group: *const EC_GROUP) -> c_int;
 
     pub fn EC_GROUP_new_curve_GFp(
@@ -90,7 +90,7 @@ extern "C" {
 
     pub fn EC_POINT_dup(p: *const EC_POINT, group: *const EC_GROUP) -> *mut EC_POINT;
 
-    #[cfg(any(ossl111, boringssl, libressl350, awslc))]
+    #[cfg(any(ossl111, boringssl, libressl, awslc))]
     pub fn EC_POINT_get_affine_coordinates(
         group: *const EC_GROUP,
         p: *const EC_POINT,
@@ -98,7 +98,7 @@ extern "C" {
         y: *mut BIGNUM,
         ctx: *mut BN_CTX,
     ) -> c_int;
-    #[cfg(any(ossl111, boringssl, libressl350, awslc))]
+    #[cfg(any(ossl111, boringssl, libressl, awslc))]
     pub fn EC_POINT_set_affine_coordinates(
         group: *const EC_GROUP,
         p: *mut EC_POINT,

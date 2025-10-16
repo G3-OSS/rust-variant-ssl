@@ -504,7 +504,6 @@ fn test_connect_with_srtp_ssl() {
 /// Tests that when the `SslStream` is created as a server stream, the protocols
 /// are correctly advertised to the client.
 #[test]
-#[cfg(any(ossl102, libressl, boringssl, awslc))]
 fn test_alpn_server_advertise_multiple() {
     let mut server = Server::builder();
     server.ctx().set_alpn_select_callback(|_, client| {
@@ -535,7 +534,6 @@ fn test_alpn_server_select_none_fatal() {
 }
 
 #[test]
-#[cfg(any(ossl102, libressl, boringssl, awslc))]
 fn test_alpn_server_select_none() {
     static CALLED_BACK: AtomicBool = AtomicBool::new(false);
 
@@ -554,7 +552,6 @@ fn test_alpn_server_select_none() {
 }
 
 #[test]
-#[cfg(any(boringssl, ossl102, libressl, awslc))]
 fn test_alpn_server_unilateral() {
     let server = Server::builder().build();
 
@@ -627,7 +624,6 @@ fn read_panic() {
 }
 
 #[test]
-#[cfg_attr(all(libressl321, not(libressl340)), ignore)]
 #[should_panic(expected = "blammo")]
 fn flush_panic() {
     struct ExplodingStream(TcpStream);
@@ -912,7 +908,7 @@ fn connector_client_server_mozilla_intermediate_v5() {
 }
 
 #[test]
-#[cfg(any(ossl111, libressl340))]
+#[cfg(any(ossl111, libressl))]
 fn connector_client_server_mozilla_modern_v5() {
     test_mozilla_server(SslAcceptor::mozilla_modern_v5);
 }
@@ -960,7 +956,7 @@ fn cert_store() {
 }
 
 #[test]
-#[cfg_attr(any(all(libressl321, not(libressl340)), boringssl, awslc), ignore)]
+#[cfg_attr(any(boringssl, awslc), ignore)]
 fn tmp_dh_callback() {
     static CALLED_BACK: AtomicBool = AtomicBool::new(false);
 
@@ -975,7 +971,7 @@ fn tmp_dh_callback() {
 
     let mut client = server.client();
     // TLS 1.3 has no DH suites, so make sure we don't pick that version
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     client.ctx().set_options(super::SslOptions::NO_TLSV1_3);
     client.ctx().set_cipher_list("EDH").unwrap();
     client.connect();
@@ -984,7 +980,7 @@ fn tmp_dh_callback() {
 }
 
 #[test]
-#[cfg_attr(any(all(libressl321, not(libressl340)), boringssl, awslc), ignore)]
+#[cfg_attr(any(boringssl, awslc), ignore)]
 fn tmp_dh_callback_ssl() {
     static CALLED_BACK: AtomicBool = AtomicBool::new(false);
 
@@ -1001,7 +997,7 @@ fn tmp_dh_callback_ssl() {
 
     let mut client = server.client();
     // TLS 1.3 has no DH suites, so make sure we don't pick that version
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     client.ctx().set_options(super::SslOptions::NO_TLSV1_3);
     client.ctx().set_cipher_list("EDH").unwrap();
     client.connect();
@@ -1020,7 +1016,7 @@ fn idle_session() {
 /// not work due to lack of PSK support. The test passes with NO_TLSV1_3,
 /// but let's ignore it until LibreSSL supports it out of the box.
 #[test]
-#[cfg_attr(libressl321, ignore)]
+#[cfg_attr(libressl, ignore)]
 fn active_session() {
     let server = Server::builder().build();
 
@@ -1080,7 +1076,7 @@ fn status_callbacks() {
 /// not work due to lack of PSK support. The test passes with NO_TLSV1_3,
 /// but let's ignore it until LibreSSL supports it out of the box.
 #[test]
-#[cfg_attr(libressl321, ignore)]
+#[cfg_attr(libressl, ignore)]
 fn new_session_callback() {
     static CALLED_BACK: AtomicBool = AtomicBool::new(false);
 
@@ -1107,7 +1103,7 @@ fn new_session_callback() {
 /// not work due to lack of PSK support. The test passes with NO_TLSV1_3,
 /// but let's ignore it until LibreSSL supports it out of the box.
 #[test]
-#[cfg_attr(libressl321, ignore)]
+#[cfg_attr(libressl, ignore)]
 fn new_session_callback_swapped_ctx() {
     static CALLED_BACK: AtomicBool = AtomicBool::new(false);
 

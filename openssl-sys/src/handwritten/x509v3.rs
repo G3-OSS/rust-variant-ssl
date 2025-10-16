@@ -106,7 +106,7 @@ extern "C" {
     pub fn X509_get_pathlen(x: *mut X509) -> c_long;
     #[cfg(ossl110)]
     pub fn X509_get_extension_flags(x: *mut X509) -> u32;
-    #[cfg(any(ossl110, libressl352))]
+    #[cfg(any(ossl110, libressl))]
     pub fn X509_get_key_usage(x: *mut X509) -> u32;
     #[cfg(ossl110)]
     pub fn X509_get_extended_key_usage(x: *mut X509) -> u32;

@@ -4,7 +4,7 @@ use super::super::*;
 
 #[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 cfg_if! {
-    if #[cfg(any(ossl110, libressl350))] {
+    if #[cfg(any(ossl110, libressl))] {
         extern "C" {
             pub fn HMAC_CTX_new() -> *mut HMAC_CTX;
             pub fn HMAC_CTX_free(ctx: *mut HMAC_CTX);

@@ -13,7 +13,7 @@ env:
   RUST_BACKTRACE: 1
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 permissions:
@@ -197,25 +197,10 @@ jobs:
                 name: libressl
                 version: 4.1.0
             - target: x86_64-unknown-linux-gnu
-              bindgen: false
+              bindgen: true
               library:
                 name: libressl
-                version: 3.8.4
-            - target: x86_64-unknown-linux-gnu
-              bindgen: false
-              library:
-                name: libressl
-                version: 3.9.2
-            - target: x86_64-unknown-linux-gnu
-              bindgen: false
-              library:
-                name: libressl
-                version: 4.0.0
-            - target: x86_64-unknown-linux-gnu
-              bindgen: false
-              library:
-                name: libressl
-                version: 4.1.0
+                version: 4.2.0
             - target: x86_64-unknown-linux-gnu
               bindgen: false
               library:

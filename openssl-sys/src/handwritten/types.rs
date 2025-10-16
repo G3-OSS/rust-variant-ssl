@@ -67,7 +67,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(ossl110, libressl350))] {
+    if #[cfg(any(ossl110, libressl))] {
         pub enum BIGNUM {}
     } else {
         #[repr(C)]
@@ -692,7 +692,7 @@ cfg_if! {
             ))]
             next_proto_select_cb_arg: *mut c_void,
 
-            #[cfg(all(not(osslconf = "OPENSSL_NO_TLSEXT"), ossl101))]
+            #[cfg(not(osslconf = "OPENSSL_NO_TLSEXT"))]
             srtp_profiles: *mut c_void,
             #[cfg(all(not(osslconf = "OPENSSL_NO_TLSEXT"), ossl102))]
             alpn_select_cb: *mut c_void,
@@ -776,7 +776,7 @@ cfg_if! {
 pub enum COMP_CTX {}
 
 cfg_if! {
-    if #[cfg(all(any(ossl110, libressl350), not(osslconf = "OPENSSL_NO_COMP")))] {
+    if #[cfg(all(any(ossl110, libressl), not(osslconf = "OPENSSL_NO_COMP")))] {
         pub enum COMP_METHOD {}
     } else if #[cfg(not(osslconf = "OPENSSL_NO_COMP"))] {
         #[repr(C)]

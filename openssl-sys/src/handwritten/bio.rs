@@ -48,6 +48,7 @@ extern "C" {
     pub fn BIO_read(b: *mut BIO, buf: *mut c_void, len: c_int) -> c_int;
     pub fn BIO_ctrl(b: *mut BIO, cmd: c_int, larg: c_long, parg: *mut c_void) -> c_long;
     pub fn BIO_free_all(b: *mut BIO);
+    pub fn BIO_new_mem_buf(buf: *const c_void, len: c_int) -> *mut BIO;
 }
 
 extern "C" {
@@ -60,7 +61,6 @@ extern "C" {
 const_ptr_api! {
     extern "C" {
         pub fn BIO_s_mem() -> #[const_ptr_if(any(ossl110, libressl))] BIO_METHOD;
-        pub fn BIO_new_mem_buf(buf: #[const_ptr_if(any(ossl102, libressl))] c_void, len: c_int) -> *mut BIO;
     }
 }
 

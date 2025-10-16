@@ -80,7 +80,7 @@ cfg_if! {
         pub const SSL_OP_TLSEXT_PADDING: ssl_op_type!() = 0x10;
     }
 }
-#[cfg(ossl101)]
+#[cfg(ossl102)]
 pub const SSL_OP_SAFARI_ECDHE_ECDSA_BUG: ssl_op_type!() = 0x00000040;
 
 pub const SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS: ssl_op_type!() = 0x00000800;
@@ -89,7 +89,7 @@ pub const SSL_OP_NO_QUERY_MTU: ssl_op_type!() = 0x00001000;
 pub const SSL_OP_COOKIE_EXCHANGE: ssl_op_type!() = 0x00002000;
 pub const SSL_OP_NO_TICKET: ssl_op_type!() = 0x00004000;
 cfg_if! {
-    if #[cfg(ossl101)] {
+    if #[cfg(ossl102)] {
         pub const SSL_OP_CISCO_ANYCONNECT: ssl_op_type!() = 0x00008000;
     } else {
         pub const SSL_OP_CISCO_ANYCONNECT: ssl_op_type!() = 0x0;
@@ -98,7 +98,7 @@ cfg_if! {
 
 pub const SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION: ssl_op_type!() = 0x00010000;
 cfg_if! {
-    if #[cfg(ossl101)] {
+    if #[cfg(ossl102)] {
         pub const SSL_OP_NO_COMPRESSION: ssl_op_type!() = 0x00020000;
         pub const SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION: ssl_op_type!() = 0x00040000;
     } else {
@@ -122,7 +122,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(ossl101)] {
+    if #[cfg(ossl102)] {
         pub const SSL_OP_NO_SSLv3: ssl_op_type!() = 0x02000000;
     } else {
         pub const SSL_OP_NO_SSLv3: ssl_op_type!() = 0x0;
@@ -136,12 +136,12 @@ cfg_if! {
     if #[cfg(ossl102)] {
         pub const SSL_OP_NO_DTLSv1: ssl_op_type!() = 0x04000000;
         pub const SSL_OP_NO_DTLSv1_2: ssl_op_type!() = 0x08000000;
-    } else if #[cfg(libressl332)] {
+    } else if #[cfg(libressl)] {
         pub const SSL_OP_NO_DTLSv1: ssl_op_type!() = 0x40000000;
         pub const SSL_OP_NO_DTLSv1_2: ssl_op_type!() = 0x80000000;
     }
 }
-#[cfg(any(ossl111, libressl340))]
+#[cfg(any(ossl111, libressl))]
 pub const SSL_OP_NO_TLSv1_3: ssl_op_type!() = 0x20000000;
 
 #[cfg(ossl110h)]
@@ -200,7 +200,7 @@ cfg_if! {
         pub const SSL_OP_SINGLE_ECDH_USE: ssl_op_type!() = 0x00000000;
         pub const SSL_OP_SINGLE_DH_USE: ssl_op_type!() = 0x00000000;
         pub const SSL_OP_NO_SSLv2: ssl_op_type!() = 0x00000000;
-    } else if #[cfg(ossl101)] {
+    } else if #[cfg(ossl102)] {
         pub const SSL_OP_MICROSOFT_SESS_ID_BUG: ssl_op_type!() = 0x00000001;
         pub const SSL_OP_NETSCAPE_CHALLENGE_BUG: ssl_op_type!() = 0x00000002;
         pub const SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG: ssl_op_type!() = 0x00000008;
@@ -231,11 +231,11 @@ pub const SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER: c_long = 0x2;
 pub const SSL_MODE_AUTO_RETRY: c_long = 0x4;
 pub const SSL_MODE_NO_AUTO_CHAIN: c_long = 0x8;
 pub const SSL_MODE_RELEASE_BUFFERS: c_long = 0x10;
-#[cfg(ossl101)]
+#[cfg(ossl102)]
 pub const SSL_MODE_SEND_CLIENTHELLO_TIME: c_long = 0x20;
-#[cfg(ossl101)]
+#[cfg(ossl102)]
 pub const SSL_MODE_SEND_SERVERHELLO_TIME: c_long = 0x40;
-#[cfg(ossl101)]
+#[cfg(ossl102)]
 pub const SSL_MODE_SEND_FALLBACK_SCSV: c_long = 0x80;
 #[cfg(ossl110)]
 pub const SSL_MODE_ASYNC: c_long = 0x100;
@@ -338,11 +338,11 @@ pub const SSL_VERIFY_FAIL_IF_NO_PEER_CERT: c_int = 2;
 pub const SSL_CTRL_SET_TMP_DH: c_int = 3;
 #[cfg(not(osslconf = "OPENSSL_NO_DEPRECATED_3_0"))]
 pub const SSL_CTRL_SET_TMP_ECDH: c_int = 4;
-#[cfg(any(libressl, all(ossl101, not(ossl110))))]
+#[cfg(any(libressl, all(ossl102, not(ossl110))))]
 pub const SSL_CTRL_GET_SESSION_REUSED: c_int = 8;
 pub const SSL_CTRL_EXTRA_CHAIN_CERT: c_int = 14;
 pub const SSL_CTRL_SET_MTU: c_int = 17;
-#[cfg(any(libressl, all(ossl101, not(ossl110))))]
+#[cfg(any(libressl, all(ossl102, not(ossl110))))]
 pub const SSL_CTRL_OPTIONS: c_int = 32;
 pub const SSL_CTRL_MODE: c_int = 33;
 pub const SSL_CTRL_SET_READ_AHEAD: c_int = 41;
@@ -358,7 +358,7 @@ pub const SSL_CTRL_SET_TLSEXT_STATUS_REQ_TYPE: c_int = 65;
 pub const SSL_CTRL_GET_TLSEXT_STATUS_REQ_OCSP_RESP: c_int = 70;
 pub const SSL_CTRL_SET_TLSEXT_STATUS_REQ_OCSP_RESP: c_int = 71;
 pub const SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB: c_int = 72;
-#[cfg(any(libressl, all(ossl101, not(ossl110))))]
+#[cfg(any(libressl, all(ossl102, not(ossl110))))]
 pub const SSL_CTRL_CLEAR_OPTIONS: c_int = 77;
 pub const SSL_CTRL_CLEAR_MODE: c_int = 78;
 pub const SSL_CTRL_GET_EXTRA_CHAIN_CERTS: c_int = 82;
@@ -578,11 +578,11 @@ pub const SSL_CLIENT_HELLO_ERROR: c_int = 0;
 #[cfg(ossl111)]
 pub const SSL_CLIENT_HELLO_RETRY: c_int = -1;
 
-#[cfg(any(ossl111, libressl340))]
+#[cfg(any(ossl111, libressl))]
 pub const SSL_READ_EARLY_DATA_ERROR: c_int = 0;
-#[cfg(any(ossl111, libressl340))]
+#[cfg(any(ossl111, libressl))]
 pub const SSL_READ_EARLY_DATA_SUCCESS: c_int = 1;
-#[cfg(any(ossl111, libressl340))]
+#[cfg(any(ossl111, libressl))]
 pub const SSL_READ_EARLY_DATA_FINISH: c_int = 2;
 
 cfg_if! {

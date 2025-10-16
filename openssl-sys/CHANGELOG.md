@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [v0.9.110] - 2025-10-14
+
+### Added
+
+* Added support for LibreSSL 4.2.0.
+* Added bindings to many OpenSSL APIs.
+
+### Changed
+
+* Bumped bindgen to 0.72.0.
+* Bumped MSRV to 1.70.
+
+### Fixed
+
+* Fixed missing `__off_t` on NetBSD 10.
+* Fixed building with `OPENSSL_NO_COMP`.
+* Fixed building with `OPENSSL_NO_SRTP`.
+* Fixed finding OpenSSL on AIX.
+
+### Removed
+
+* Removed support for OpenSSL <1.0.2.
+* Removed support for LibreSSL <3.5.
+
 ## [v0.9.109] - 2025-05-28
 
 ### Fixed
@@ -655,7 +679,8 @@ Fixed builds against OpenSSL built with `no-cast`.
 * Added `X509_verify` and `X509_REQ_verify`.
 * Added `EVP_MD_type` and `EVP_GROUP_get_curve_name`.
 
-[Unreleased]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.109..master
+[Unreleased]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.110..master
+[v0.9.110]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.109...openssl-sys-v0.9.110
 [v0.9.109]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.108...openssl-sys-v0.9.109
 [v0.9.108]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.107...openssl-sys-v0.9.108
 [v0.9.107]: https://github.com/rust-openssl/rust-openssl/compare/openssl-sys-v0.9.106...openssl-sys-v0.9.107

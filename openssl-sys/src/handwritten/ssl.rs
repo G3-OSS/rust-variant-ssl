@@ -283,11 +283,8 @@ extern "C" {
 }
 
 extern "C" {
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_CTX_set_alpn_protos(s: *mut SSL_CTX, data: *const c_uchar, len: c_uint) -> c_int;
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_set_alpn_protos(s: *mut SSL, data: *const c_uchar, len: c_uint) -> c_int;
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_CTX_set_alpn_select_cb(
         ssl: *mut SSL_CTX,
         cb: Option<
@@ -302,7 +299,6 @@ extern "C" {
         >,
         arg: *mut c_void,
     );
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_get0_alpn_selected(s: *const SSL, data: *mut *const c_uchar, len: *mut c_uint);
 }
 
@@ -356,13 +352,13 @@ extern "C" {
     #[cfg(ossl111)]
     pub fn SSL_CTX_set_keylog_callback(ctx: *mut SSL_CTX, cb: SSL_CTX_keylog_cb_func);
 
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_CTX_set_max_early_data(ctx: *mut SSL_CTX, max_early_data: u32) -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_CTX_get_max_early_data(ctx: *const SSL_CTX) -> u32;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_set_max_early_data(ctx: *mut SSL, max_early_data: u32) -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_get_max_early_data(ctx: *const SSL) -> u32;
 
     pub fn SSL_get_finished(s: *const SSL, buf: *mut c_void, count: size_t) -> size_t;
@@ -427,9 +423,9 @@ extern "C" {
     pub fn SSL_set_bio(ssl: *mut SSL, rbio: *mut BIO, wbio: *mut BIO);
     pub fn SSL_get_rbio(ssl: *const SSL) -> *mut BIO;
     pub fn SSL_get_wbio(ssl: *const SSL) -> *mut BIO;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_CTX_set_ciphersuites(ctx: *mut SSL_CTX, str: *const c_char) -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_set_ciphersuites(ssl: *mut SSL, str: *const c_char) -> c_int;
     pub fn SSL_set_cipher_list(ssl: *mut SSL, s: *const c_char) -> c_int;
     pub fn SSL_set_ssl_method(s: *mut SSL, method: *const SSL_METHOD) -> c_int;
@@ -459,7 +455,7 @@ extern "C" {
     pub fn SSL_use_PrivateKey_file(ssl: *mut SSL, file: *const c_char, type_: c_int) -> c_int;
     pub fn SSL_use_PrivateKey(ssl: *mut SSL, pkey: *mut EVP_PKEY) -> c_int;
     pub fn SSL_use_certificate(ssl: *mut SSL, x: *mut X509) -> c_int;
-    #[cfg(any(ossl110, libressl332))]
+    #[cfg(any(ossl110, libressl))]
     pub fn SSL_use_certificate_chain_file(ssl: *mut SSL, file: *const c_char) -> c_int;
     pub fn SSL_set_client_CA_list(s: *mut SSL, name_list: *mut stack_st_X509_NAME);
     pub fn SSL_add_client_CA(ssl: *mut SSL, x: *mut X509) -> c_int;
@@ -475,9 +471,9 @@ extern "C" {
     #[cfg(any(ossl110, libressl))]
     pub fn SSL_SESSION_get_protocol_version(s: *const SSL_SESSION) -> c_int;
 
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_SESSION_set_max_early_data(ctx: *mut SSL_SESSION, max_early_data: u32) -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_SESSION_get_max_early_data(ctx: *const SSL_SESSION) -> u32;
 
     pub fn SSL_SESSION_get_id(s: *const SSL_SESSION, len: *mut c_uint) -> *const c_uchar;
@@ -561,7 +557,7 @@ extern "C" {
     );
     pub fn SSL_CTX_set_verify_depth(ctx: *mut SSL_CTX, depth: c_int);
 
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_CTX_set_post_handshake_auth(ctx: *mut SSL_CTX, val: c_int);
 
     pub fn SSL_CTX_check_private_key(ctx: *const SSL_CTX) -> c_int;
@@ -574,10 +570,8 @@ extern "C" {
 
     pub fn SSL_new(ctx: *mut SSL_CTX) -> *mut SSL;
 
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_CTX_get0_param(ctx: *mut SSL_CTX) -> *mut X509_VERIFY_PARAM;
 
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_get0_param(ssl: *mut SSL) -> *mut X509_VERIFY_PARAM;
 }
 
@@ -626,14 +620,14 @@ extern "C" {
     pub fn SSL_stateless(s: *mut SSL) -> c_int;
     pub fn SSL_connect(ssl: *mut SSL) -> c_int;
     pub fn SSL_read(ssl: *mut SSL, buf: *mut c_void, num: c_int) -> c_int;
-    #[cfg(any(ossl111, libressl350))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_read_ex(ssl: *mut SSL, buf: *mut c_void, num: usize, readbytes: *mut usize)
         -> c_int;
     pub fn SSL_peek(ssl: *mut SSL, buf: *mut c_void, num: c_int) -> c_int;
-    #[cfg(any(ossl111, libressl350))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_peek_ex(ssl: *mut SSL, buf: *mut c_void, num: usize, readbytes: *mut usize)
         -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_read_early_data(
         s: *mut SSL,
         buf: *mut c_void,
@@ -653,14 +647,14 @@ extern "C" {
 
 extern "C" {
     pub fn SSL_write(ssl: *mut SSL, buf: *const c_void, num: c_int) -> c_int;
-    #[cfg(any(ossl111, libressl350))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_write_ex(
         ssl: *mut SSL,
         buf: *const c_void,
         num: size_t,
         written: *mut size_t,
     ) -> c_int;
-    #[cfg(any(ossl111, libressl340))]
+    #[cfg(any(ossl111, libressl))]
     pub fn SSL_write_early_data(
         s: *mut SSL,
         buf: *const c_void,
@@ -755,17 +749,11 @@ extern "C" {
     ) -> *mut c_char;
 
     pub fn SSL_get_certificate(ssl: *const SSL) -> *mut X509;
-}
-const_ptr_api! {
-    extern "C" {
-        pub fn SSL_get_privatekey(ssl: #[const_ptr_if(any(ossl102, libressl))] SSL) -> *mut EVP_PKEY;
-    }
+    pub fn SSL_get_privatekey(ssl: *const SSL) -> *mut EVP_PKEY;
 }
 
 extern "C" {
-    #[cfg(any(ossl102, libressl))]
     pub fn SSL_CTX_get0_certificate(ctx: *const SSL_CTX) -> *mut X509;
-    #[cfg(any(ossl102, libressl340))]
     pub fn SSL_CTX_get0_privatekey(ctx: *const SSL_CTX) -> *mut EVP_PKEY;
 
     pub fn SSL_set_shutdown(ss: *mut SSL, mode: c_int);
@@ -911,7 +899,6 @@ const_ptr_api! {
 
 const_ptr_api! {
     extern "C" {
-        #[cfg(any(ossl102, libressl))]
         pub fn SSL_is_server(s: #[const_ptr_if(any(ossl110f, libressl))] SSL) -> c_int;
     }
 }

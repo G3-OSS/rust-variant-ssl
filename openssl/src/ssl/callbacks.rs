@@ -21,7 +21,6 @@ use crate::hmac::HMacCtxRef;
 #[cfg(ossl300)]
 use crate::mac_ctx::MacCtxRef;
 use crate::pkey::Params;
-#[cfg(any(ossl102, libressl, boringssl, awslc))]
 use crate::ssl::AlpnError;
 #[cfg(any(ossl111, all(awslc, not(awslc_fips))))]
 use crate::ssl::ClientHelloError;

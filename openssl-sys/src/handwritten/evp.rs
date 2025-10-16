@@ -124,7 +124,7 @@ extern "C" {
     pub fn EVP_DigestFinal(ctx: *mut EVP_MD_CTX, res: *mut u8, n: *mut u32) -> c_int;
     #[cfg(ossl111)]
     pub fn EVP_DigestFinalXOF(ctx: *mut EVP_MD_CTX, res: *mut u8, len: usize) -> c_int;
-    #[cfg(ossl330)]
+    #[cfg(any(ossl330, awslc))]
     pub fn EVP_DigestSqueeze(ctx: *mut EVP_MD_CTX, res: *mut u8, len: usize) -> c_int;
 
     #[cfg(ossl300)]
@@ -199,6 +199,11 @@ extern "C" {
         ctx: *mut EVP_MD_CTX,
         data: *const c_void,
         dsize: size_t,
+    ) -> c_int;
+    pub fn EVP_DigestVerifyFinal(
+        ctx: *mut EVP_MD_CTX,
+        sigret: *const c_uchar,
+        siglen: size_t,
     ) -> c_int;
     pub fn EVP_SealInit(
         ctx: *mut EVP_CIPHER_CTX,
@@ -290,15 +295,6 @@ cfg_if! {
                 tbslen: size_t
             ) -> c_int;
         }
-    }
-}
-const_ptr_api! {
-    extern "C" {
-        pub fn EVP_DigestVerifyFinal(
-            ctx: *mut EVP_MD_CTX,
-            sigret: #[const_ptr_if(any(ossl102, libressl))] c_uchar,
-            siglen: size_t,
-        ) -> c_int;
     }
 }
 
