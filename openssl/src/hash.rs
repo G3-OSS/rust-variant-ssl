@@ -304,7 +304,7 @@ impl Hasher {
 
     /// Squeezes buf out of the hasher. Can be called multiple times, unlike `finish_xof`.
     /// The output will be as long as the buf.
-    #[cfg(any(ossl330, awslc))]
+    #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
     pub fn squeeze_xof(&mut self, buf: &mut [u8]) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::EVP_DigestSqueeze(
@@ -514,7 +514,7 @@ mod tests {
     }
 
     /// Squeezes the expected length by doing two squeezes.
-    #[cfg(any(ossl330, awslc))]
+    #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
     fn hash_xof_squeeze_test(hashtype: MessageDigest, hashtest: &(&str, &str)) {
         let data = Vec::from_hex(hashtest.0).unwrap();
         let mut h = Hasher::new(hashtype).unwrap();
@@ -584,7 +584,7 @@ mod tests {
         assert_eq!(&*res, &*null);
     }
 
-    #[cfg(any(ossl330, awslc))]
+    #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
     #[test]
     fn test_finish_then_squeeze() {
         let digest = MessageDigest::shake_128();
@@ -595,7 +595,7 @@ mod tests {
             .expect_err("squeezing after finalize should fail");
     }
 
-    #[cfg(any(ossl330, awslc))]
+    #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
     #[test]
     fn test_squeeze_then_update() {
         let digest = MessageDigest::shake_128();
@@ -607,7 +607,7 @@ mod tests {
             .expect_err("updating after squeeze should fail");
     }
 
-    #[cfg(any(ossl330, awslc))]
+    #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
     #[test]
     fn test_squeeze_then_finalize() {
         let digest = MessageDigest::shake_128();
@@ -795,7 +795,7 @@ mod tests {
 
         for test in tests.iter() {
             hash_xof_test(MessageDigest::shake_128(), test);
-            #[cfg(any(ossl330, awslc))]
+            #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
             hash_xof_squeeze_test(MessageDigest::shake_128(), test);
         }
 
@@ -820,7 +820,7 @@ mod tests {
 
         for test in tests.iter() {
             hash_xof_test(MessageDigest::shake_256(), test);
-            #[cfg(any(ossl330, awslc))]
+            #[cfg(any(ossl330, all(awslc, not(awslc_fips))))]
             hash_xof_squeeze_test(MessageDigest::shake_256(), test);
         }
 
