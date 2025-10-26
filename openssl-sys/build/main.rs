@@ -96,7 +96,7 @@ fn check_ssl_kind() {
         // were to resolve to multiple versions for the same crate.
         //
         // Due to this we need to determine what version of the AWS-LC has been selected (fips or non-fips)
-        // and then need to parse out the pieces we are interested in ignoring the version componenet of the name.
+        // and then need to parse out the pieces we are interested in ignoring the version component of the name.
         let aws_lc_env_var_prefix: &'static str = if is_aws_lc_fips {
             "DEP_AWS_LC_FIPS_"
         } else {

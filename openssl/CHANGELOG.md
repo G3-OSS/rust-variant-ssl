@@ -93,7 +93,7 @@
 ### Fixed
 
 * Fixed a case where `MdCtxRef::digest_verify_final` could leave an error on the stack.
-* Fixed a case where `RsaRef::check_key` could leave an errror on the stack.
+* Fixed a case where `RsaRef::check_key` could leave an error on the stack.
 
 ### Changed
 
@@ -219,7 +219,7 @@
 * Added `CipherCtx::copy`
 
 ### Changed
-* Updated `bitflags` dependecy to the 2.x series
+* Updated `bitflags` dependency to the 2.x series
 
 ## [v0.10.56] - 2023-08-06
 

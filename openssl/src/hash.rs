@@ -282,7 +282,7 @@ impl Hasher {
         if self.state == Squeeze {
             // [`EVP_DigestUpdate`], depending on the implementation, may allow Updates after Squeezes.
             // But, [FIPS 202], as shown in Figure 7, has a distinguished absorbing phase followed by a squeezing phase.
-            // Indeed, the [`sha3.c`] implmentation disallows Updates after Squeezes.
+            // Indeed, the [`sha3.c`] implementation disallows Updates after Squeezes.
             // For consistency, we always return an error when Update is called after Squeeze.
             //
             // [`EVP_DigestUpdate`]: https://github.com/openssl/openssl/blob/b3bb214720f20f3b126ae4b9c330e9a48b835415/crypto/evp/digest.c#L385-L393
