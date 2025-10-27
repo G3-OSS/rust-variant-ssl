@@ -3897,7 +3897,7 @@ impl SslRef {
     }
 
     #[corresponds(SSL_add0_chain_cert)]
-    #[cfg(any(ossl102, libressl291, boringssl, awslc))]
+    #[cfg(any(ossl102, libressl, boringssl, awslc))]
     pub fn add_chain_cert(&mut self, chain: X509) -> Result<(), ErrorStack> {
         unsafe {
             cvt(ffi::SSL_add0_chain_cert(self.as_ptr(), chain.as_ptr()) as c_int).map(|_| ())?;

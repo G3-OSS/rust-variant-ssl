@@ -232,7 +232,7 @@ impl SslAcceptor {
         let mut ctx = ctx(method)?;
         ctx.set_options(SslOptions::NO_TLSV1 | SslOptions::NO_TLSV1_1);
         setup_dh_params(&mut ctx)?;
-        #[cfg(any(ossl111, boringssl, libressl251))]
+        #[cfg(any(ossl111, libressl, boringssl, awslc))]
         ctx.set_groups_list("X25519:P-256:P-384")?;
         ctx.set_cipher_list(
             "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:\

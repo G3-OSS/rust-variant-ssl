@@ -147,6 +147,16 @@ extern "C" {
     pub fn DIST_POINT_NAME_free(dist_point: *mut DIST_POINT_NAME);
 }
 
+#[repr(C)]
+pub struct BASIC_CONSTRAINTS {
+    pub ca: c_int,
+    pub pathlen: *mut ASN1_INTEGER,
+}
+
+extern "C" {
+    pub fn BASIC_CONSTRAINTS_free(bs: *mut BASIC_CONSTRAINTS);
+}
+
 #[cfg(ossl102)]
 extern "C" {
     pub fn X509_check_host(

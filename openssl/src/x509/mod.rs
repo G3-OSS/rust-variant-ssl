@@ -420,7 +420,7 @@ impl X509Ref {
 
     /// Returns the extensions of the certificate.
     #[corresponds(X509_get0_extensions)]
-    #[cfg(any(ossl111, libressl272, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn extensions(&self) -> Option<&StackRef<X509Extension>> {
         unsafe {
             let extensions = ffi::X509_get0_extensions(self.as_ptr());
@@ -430,7 +430,7 @@ impl X509Ref {
 
     /// Look for an extension with nid from the extensions of the certificate.
     #[corresponds(X509_get0_ext_by_NID)]
-    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn get_extension_location(&self, nid: Nid, lastpos: Option<i32>) -> Option<i32> {
         let lastpos = lastpos.unwrap_or(-1);
         unsafe {
@@ -445,7 +445,7 @@ impl X509Ref {
 
     /// Retrieves extension loc from certificate.
     #[corresponds(X509_get_ext)]
-    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn get_extension(&self, loc: i32) -> Result<&X509ExtensionRef, ErrorStack> {
         unsafe {
             let ext = cvt_p(ffi::X509_get_ext(self.as_ptr(), loc as _))?;
@@ -531,6 +531,27 @@ impl X509Ref {
         u32::try_from(v).ok()
     }
 
+    #[allow(deprecated)]
+    #[cfg(libressl)]
+    pub fn pathlen(&self) -> Option<u32> {
+        let bs = self.basic_constraints()?;
+        let pathlen = bs.pathlen()?;
+        u32::try_from(pathlen.get()).ok()
+    }
+
+    /// Retrieves the basic constraints extension from a certificate, if it exists.
+    pub fn basic_constraints(&self) -> Option<BasicConstraints> {
+        unsafe {
+            let data = ffi::X509_get_ext_d2i(
+                self.as_ptr(),
+                ffi::NID_basic_constraints,
+                ptr::null_mut(),
+                ptr::null_mut(),
+            );
+            BasicConstraints::from_ptr_opt(data as _)
+        }
+    }
+
     /// Returns this certificate's subject key id, if it exists.
     #[corresponds(X509_get0_subject_key_id)]
     #[cfg(any(ossl110, boringssl, awslc))]
@@ -538,6 +559,20 @@ impl X509Ref {
         unsafe {
             let data = ffi::X509_get0_subject_key_id(self.as_ptr());
             Asn1OctetStringRef::from_const_ptr_opt(data)
+        }
+    }
+
+    /// Returns this certificate's subject key id, if it exists.
+    #[cfg(libressl)]
+    pub fn subject_key_id(&self) -> Option<&Asn1OctetStringRef> {
+        unsafe {
+            let data = ffi::X509_get_ext_d2i(
+                self.as_ptr(),
+                ffi::NID_subject_key_identifier,
+                ptr::null_mut(),
+                ptr::null_mut(),
+            );
+            Asn1OctetStringRef::from_const_ptr_opt(data as _)
         }
     }
 
@@ -553,7 +588,7 @@ impl X509Ref {
 
     /// Returns this certificate's authority issuer name entries, if they exist.
     #[corresponds(X509_get0_authority_issuer)]
-    #[cfg(any(ossl111d, boringssl))]
+    #[cfg(any(ossl111d, boringssl, awslc))]
     pub fn authority_issuer(&self) -> Option<&StackRef<GeneralName>> {
         unsafe {
             let stack = ffi::X509_get0_authority_issuer(self.as_ptr());
@@ -563,7 +598,7 @@ impl X509Ref {
 
     /// Returns this certificate's authority serial number, if it exists.
     #[corresponds(X509_get0_authority_serial)]
-    #[cfg(any(ossl111d, boringssl))]
+    #[cfg(any(ossl111d, boringssl, awslc))]
     pub fn authority_serial(&self) -> Option<&Asn1IntegerRef> {
         unsafe {
             let r = ffi::X509_get0_authority_serial(self.as_ptr());
@@ -580,7 +615,7 @@ impl X509Ref {
     }
 
     #[corresponds(X509_get_X509_PUBKEY)]
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, libressl, boringssl, awslc))]
     pub fn x509_pubkey(&self) -> Result<&X509PubkeyRef, ErrorStack> {
         unsafe {
             let key = cvt_p(ffi::X509_get_X509_PUBKEY(self.as_ptr()))?;
@@ -668,7 +703,7 @@ impl X509Ref {
     ///
     /// Note that `0` return value stands for version 1, `1` for version 2 and so on.
     #[corresponds(X509_get_version)]
-    #[cfg(any(ossl110, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl110, libressl, boringssl, awslc))]
     #[allow(clippy::unnecessary_cast)]
     pub fn version(&self) -> i32 {
         unsafe { ffi::X509_get_version(self.as_ptr()) as i32 }
@@ -2423,6 +2458,32 @@ impl DistPointNameRef {
 
 impl Stackable for DistPoint {
     type StackType = ffi::stack_st_DIST_POINT;
+}
+
+foreign_type_and_impl_send_sync! {
+    type CType = ffi::BASIC_CONSTRAINTS;
+    fn drop = ffi::BASIC_CONSTRAINTS_free;
+
+    /// A `X509` basic constraints.
+    pub struct BasicConstraints;
+    /// Reference to `BasicConstraints`.
+    pub struct BasicConstraintsRef;
+}
+
+impl BasicConstraintsRef {
+    pub fn ca(&self) -> bool {
+        unsafe { (*(self.as_ptr())).ca != 0 }
+    }
+
+    pub fn pathlen(&self) -> Option<&Asn1IntegerRef> {
+        if !self.ca() {
+            return None;
+        }
+        unsafe {
+            let data = (*(self.as_ptr())).pathlen;
+            Asn1IntegerRef::from_const_ptr_opt(data as _)
+        }
+    }
 }
 
 foreign_type_and_impl_send_sync! {
