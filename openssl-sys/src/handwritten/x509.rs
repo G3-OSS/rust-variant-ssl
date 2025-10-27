@@ -339,7 +339,7 @@ extern "C" {
     pub fn X509_get_pubkey(x: *mut X509) -> *mut EVP_PKEY;
 
     pub fn X509_set_version(x: *mut X509, version: c_long) -> c_int;
-    #[cfg(any(ossl110, libressl282))]
+    #[cfg(any(ossl110, libressl))]
     pub fn X509_get_version(x: *const X509) -> c_long;
     pub fn X509_set_serialNumber(x: *mut X509, sn: *mut ASN1_INTEGER) -> c_int;
     pub fn X509_get_serialNumber(x: *mut X509) -> *mut ASN1_INTEGER;
@@ -530,9 +530,9 @@ extern "C" {
     #[cfg(any(ossl110, libressl))]
     pub fn X509_CRL_get_issuer(x: *const X509_CRL) -> *mut X509_NAME;
 
-    #[cfg(any(ossl110, libressl272))]
+    #[cfg(any(ossl110, libressl))]
     pub fn X509_get0_extensions(req: *const X509) -> *const stack_st_X509_EXTENSION;
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, libressl))]
     pub fn X509_get_X509_PUBKEY(x: *const X509) -> *mut X509_PUBKEY;
 
     pub fn X509_CRL_set_version(crl: *mut X509_CRL, version: c_long) -> c_int;

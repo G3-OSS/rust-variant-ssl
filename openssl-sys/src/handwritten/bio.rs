@@ -76,32 +76,32 @@ extern "C" {
 
 #[allow(clashing_extern_declarations)]
 extern "C" {
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_write(
         biom: *mut BIO_METHOD,
         write: Option<unsafe extern "C" fn(*mut BIO, *const c_char, c_int) -> c_int>,
     ) -> c_int;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_read(
         biom: *mut BIO_METHOD,
         read: Option<unsafe extern "C" fn(*mut BIO, *mut c_char, c_int) -> c_int>,
     ) -> c_int;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_puts(
         biom: *mut BIO_METHOD,
         read: Option<unsafe extern "C" fn(*mut BIO, *const c_char) -> c_int>,
     ) -> c_int;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_ctrl(
         biom: *mut BIO_METHOD,
         read: Option<unsafe extern "C" fn(*mut BIO, c_int, c_long, *mut c_void) -> c_long>,
     ) -> c_int;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_create(
         biom: *mut BIO_METHOD,
         create: Option<unsafe extern "C" fn(*mut BIO) -> c_int>,
     ) -> c_int;
-    #[cfg(any(ossl110, libressl273))]
+    #[cfg(any(ossl110, libressl))]
     pub fn BIO_meth_set_destroy(
         biom: *mut BIO_METHOD,
         destroy: Option<unsafe extern "C" fn(*mut BIO) -> c_int>,
