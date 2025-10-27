@@ -531,6 +531,27 @@ impl X509Ref {
         u32::try_from(v).ok()
     }
 
+    #[allow(deprecated)]
+    #[cfg(libressl)]
+    pub fn pathlen(&self) -> Option<u32> {
+        let bs = self.basic_constraints()?;
+        let pathlen = bs.pathlen()?;
+        u32::try_from(pathlen.get()).ok()
+    }
+
+    /// Retrieves the basic constraints extension from a certificate, if it exists.
+    pub fn basic_constraints(&self) -> Option<BasicConstraints> {
+        unsafe {
+            let data = ffi::X509_get_ext_d2i(
+                self.as_ptr(),
+                ffi::NID_basic_constraints,
+                ptr::null_mut(),
+                ptr::null_mut(),
+            );
+            BasicConstraints::from_ptr_opt(data as _)
+        }
+    }
+
     /// Returns this certificate's subject key id, if it exists.
     #[corresponds(X509_get0_subject_key_id)]
     #[cfg(any(ossl110, boringssl, awslc))]
@@ -2437,6 +2458,32 @@ impl DistPointNameRef {
 
 impl Stackable for DistPoint {
     type StackType = ffi::stack_st_DIST_POINT;
+}
+
+foreign_type_and_impl_send_sync! {
+    type CType = ffi::BASIC_CONSTRAINTS;
+    fn drop = ffi::BASIC_CONSTRAINTS_free;
+
+    /// A `X509` basic constraints.
+    pub struct BasicConstraints;
+    /// Reference to `BasicConstraints`.
+    pub struct BasicConstraintsRef;
+}
+
+impl BasicConstraintsRef {
+    pub fn ca(&self) -> bool {
+        unsafe { (*(self.as_ptr())).ca != 0 }
+    }
+
+    pub fn pathlen(&self) -> Option<&Asn1IntegerRef> {
+        if !self.ca() {
+            return None;
+        }
+        unsafe {
+            let data = (*(self.as_ptr())).pathlen;
+            Asn1IntegerRef::from_const_ptr_opt(data as _)
+        }
+    }
 }
 
 foreign_type_and_impl_send_sync! {
