@@ -532,12 +532,15 @@ impl X509Ref {
     }
 
     /// Returns this certificate's subject key id, if it exists.
-    #[corresponds(X509_get0_subject_key_id)]
-    #[cfg(any(ossl110, boringssl, awslc))]
     pub fn subject_key_id(&self) -> Option<&Asn1OctetStringRef> {
         unsafe {
-            let data = ffi::X509_get0_subject_key_id(self.as_ptr());
-            Asn1OctetStringRef::from_const_ptr_opt(data)
+            let data = ffi::X509_get_ext_d2i(
+                self.as_ptr(),
+                ffi::NID_subject_key_identifier,
+                ptr::null_mut(),
+                ptr::null_mut(),
+            );
+            Asn1OctetStringRef::from_const_ptr_opt(data as _)
         }
     }
 

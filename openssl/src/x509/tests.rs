@@ -198,7 +198,6 @@ fn test_retrieve_pathlen() {
 }
 
 #[test]
-#[cfg(any(ossl110, boringssl, awslc))]
 fn test_subject_key_id() {
     let cert = include_bytes!("../../test/certv3.pem");
     let cert = X509::from_pem(cert).unwrap();
