@@ -420,7 +420,7 @@ impl X509Ref {
 
     /// Returns the extensions of the certificate.
     #[corresponds(X509_get0_extensions)]
-    #[cfg(any(ossl111, libressl272, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn extensions(&self) -> Option<&StackRef<X509Extension>> {
         unsafe {
             let extensions = ffi::X509_get0_extensions(self.as_ptr());
@@ -430,7 +430,7 @@ impl X509Ref {
 
     /// Look for an extension with nid from the extensions of the certificate.
     #[corresponds(X509_get0_ext_by_NID)]
-    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn get_extension_location(&self, nid: Nid, lastpos: Option<i32>) -> Option<i32> {
         let lastpos = lastpos.unwrap_or(-1);
         unsafe {
@@ -445,7 +445,7 @@ impl X509Ref {
 
     /// Retrieves extension loc from certificate.
     #[corresponds(X509_get_ext)]
-    #[cfg(any(ossl111, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl111, libressl, boringssl, awslc))]
     pub fn get_extension(&self, loc: i32) -> Result<&X509ExtensionRef, ErrorStack> {
         unsafe {
             let ext = cvt_p(ffi::X509_get_ext(self.as_ptr(), loc as _))?;
@@ -553,7 +553,7 @@ impl X509Ref {
 
     /// Returns this certificate's authority issuer name entries, if they exist.
     #[corresponds(X509_get0_authority_issuer)]
-    #[cfg(any(ossl111d, boringssl))]
+    #[cfg(any(ossl111d, boringssl, awslc))]
     pub fn authority_issuer(&self) -> Option<&StackRef<GeneralName>> {
         unsafe {
             let stack = ffi::X509_get0_authority_issuer(self.as_ptr());
@@ -563,7 +563,7 @@ impl X509Ref {
 
     /// Returns this certificate's authority serial number, if it exists.
     #[corresponds(X509_get0_authority_serial)]
-    #[cfg(any(ossl111d, boringssl))]
+    #[cfg(any(ossl111d, boringssl, awslc))]
     pub fn authority_serial(&self) -> Option<&Asn1IntegerRef> {
         unsafe {
             let r = ffi::X509_get0_authority_serial(self.as_ptr());
@@ -580,7 +580,7 @@ impl X509Ref {
     }
 
     #[corresponds(X509_get_X509_PUBKEY)]
-    #[cfg(any(ossl110, boringssl))]
+    #[cfg(any(ossl110, libressl, boringssl, awslc))]
     pub fn x509_pubkey(&self) -> Result<&X509PubkeyRef, ErrorStack> {
         unsafe {
             let key = cvt_p(ffi::X509_get_X509_PUBKEY(self.as_ptr()))?;
@@ -668,7 +668,7 @@ impl X509Ref {
     ///
     /// Note that `0` return value stands for version 1, `1` for version 2 and so on.
     #[corresponds(X509_get_version)]
-    #[cfg(any(ossl110, libressl282, boringssl, awslc))]
+    #[cfg(any(ossl110, libressl, boringssl, awslc))]
     #[allow(clippy::unnecessary_cast)]
     pub fn version(&self) -> i32 {
         unsafe { ffi::X509_get_version(self.as_ptr()) as i32 }

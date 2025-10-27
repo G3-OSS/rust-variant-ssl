@@ -224,7 +224,7 @@ fn test_authority_key_id() {
 }
 
 #[test]
-#[cfg(ossl111d)]
+#[cfg(any(ossl111d, boringssl, awslc))]
 fn test_authority_issuer_and_serial() {
     let cert = include_bytes!("../../test/authority_key_identifier.pem");
     let cert = X509::from_pem(cert).unwrap();
@@ -292,7 +292,7 @@ fn test_x509_pubkey() {
 }
 
 #[test]
-#[cfg(any(ossl110, boringssl))]
+#[cfg(any(ossl110, libressl, boringssl, awslc))]
 fn test_x509_pubkey_ref() {
     let cert = include_bytes!("../../test/certv3.pem");
     let cert = X509::from_pem(cert).unwrap();
