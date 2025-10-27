@@ -182,7 +182,7 @@ fn test_subject_alt_name() {
 }
 
 #[test]
-#[cfg(any(ossl110, boringssl, awslc))]
+#[cfg(any(ossl110, libressl, boringssl, awslc))]
 fn test_retrieve_pathlen() {
     let cert = include_bytes!("../../test/root-ca.pem");
     let cert = X509::from_pem(cert).unwrap();

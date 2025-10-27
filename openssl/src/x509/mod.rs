@@ -531,6 +531,7 @@ impl X509Ref {
         u32::try_from(v).ok()
     }
 
+    /// Retrieves the path length extension from a certificate, if it exists.
     #[allow(deprecated)]
     #[cfg(libressl)]
     pub fn pathlen(&self) -> Option<u32> {
