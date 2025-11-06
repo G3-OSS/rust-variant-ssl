@@ -117,10 +117,6 @@ cfg_if! {
 }
 pub enum EVP_CIPHER_CTX {}
 pub enum EVP_MD {}
-#[cfg(ossl300)]
-pub enum EVP_MAC {}
-#[cfg(ossl300)]
-pub enum EVP_MAC_CTX {}
 cfg_if! {
     if #[cfg(any(ossl110, libressl))] {
         pub enum EVP_MD_CTX {}
