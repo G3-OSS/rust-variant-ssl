@@ -65,37 +65,6 @@ cfg_if! {
     }
 }
 
-#[cfg(ossl300)]
-extern "C" {
-    pub fn EVP_MAC_fetch(
-        libctx: *mut OSSL_LIB_CTX,
-        algorithm: *const c_char,
-        properties: *const c_char,
-    ) -> *mut EVP_MAC;
-    pub fn EVP_MAC_free(mac: *mut EVP_MAC);
-
-    pub fn EVP_MAC_CTX_new(mac: *mut EVP_MAC) -> *mut EVP_MAC_CTX;
-    pub fn EVP_MAC_CTX_free(ctx: *mut EVP_MAC_CTX);
-    pub fn EVP_MAC_CTX_dup(src: *const EVP_MAC_CTX) -> *mut EVP_MAC_CTX;
-    pub fn EVP_MAC_CTX_set_params(ctx: *mut EVP_MAC_CTX, params: *const OSSL_PARAM) -> c_int;
-    pub fn EVP_MAC_CTX_get_mac_size(ctx: *mut EVP_MAC_CTX) -> usize;
-    pub fn EVP_MAC_CTX_get_block_size(ctx: *mut EVP_MAC_CTX) -> usize;
-
-    pub fn EVP_MAC_init(
-        ctx: *mut EVP_MAC_CTX,
-        key: *const c_uchar,
-        keylen: usize,
-        params: *const OSSL_PARAM,
-    ) -> c_int;
-    pub fn EVP_MAC_update(ctx: *mut EVP_MAC_CTX, data: *const c_uchar, datalen: usize) -> c_int;
-    pub fn EVP_MAC_final(
-        ctx: *mut EVP_MAC_CTX,
-        out: *mut c_uchar,
-        outl: *mut usize,
-        outsize: usize,
-    ) -> c_int;
-}
-
 cfg_if! {
     if #[cfg(ossl300)] {
         extern "C" {
