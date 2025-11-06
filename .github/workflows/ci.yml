@@ -73,7 +73,6 @@ jobs:
             index-${{ runner.os }}-
       - run: cargo generate-lockfile
       - run: |
-          cargo update -p home --precise 0.5.11
           cargo update -p once_cell --precise 1.20.3
       - uses: actions/cache@v4
         with:
