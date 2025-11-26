@@ -1345,7 +1345,6 @@ impl X509NameRef {
 
     /// Copies the name to a new `X509Name`.
     #[corresponds(X509_NAME_dup)]
-    #[cfg(any(boringssl, ossl110, libressl, awslc))]
     pub fn to_owned(&self) -> Result<X509Name, ErrorStack> {
         unsafe { cvt_p(ffi::X509_NAME_dup(self.as_ptr())).map(|n| X509Name::from_ptr(n)) }
     }
@@ -1850,8 +1849,7 @@ impl X509RevokedRef {
     }
 
     /// Copies the entry to a new `X509Revoked`.
-    #[corresponds(X509_NAME_dup)]
-    #[cfg(any(boringssl, ossl110, libressl, awslc))]
+    #[corresponds(X509_REVOKED_dup)]
     pub fn to_owned(&self) -> Result<X509Revoked, ErrorStack> {
         unsafe { cvt_p(ffi::X509_REVOKED_dup(self.as_ptr())).map(|n| X509Revoked::from_ptr(n)) }
     }
@@ -2311,6 +2309,35 @@ impl GeneralName {
             }
 
             mem::forget(oid);
+
+            Ok(GeneralName::from_ptr(gn))
+        }
+    }
+
+    pub(crate) fn new_dir_name(name: &X509NameRef) -> Result<GeneralName, ErrorStack> {
+        unsafe {
+            ffi::init();
+            let gn = cvt_p(ffi::GENERAL_NAME_new())?;
+            (*gn).type_ = ffi::GEN_DIRNAME;
+
+            let dup = match name.to_owned() {
+                Ok(dup) => dup,
+                Err(e) => {
+                    ffi::GENERAL_NAME_free(gn);
+                    return Err(e);
+                }
+            };
+
+            #[cfg(any(boringssl, awslc))]
+            {
+                (*gn).d.directoryName = dup.as_ptr();
+            }
+            #[cfg(not(any(boringssl, awslc)))]
+            {
+                (*gn).d = dup.as_ptr().cast();
+            }
+
+            std::mem::forget(dup);
 
             Ok(GeneralName::from_ptr(gn))
         }

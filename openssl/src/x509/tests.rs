@@ -26,7 +26,6 @@ use crate::x509::{
     CrlStatus, X509Crl, X509Extension, X509Name, X509Pubkey, X509Req, X509StoreContext,
     X509VerifyResult, X509,
 };
-
 #[cfg(ossl110)]
 use foreign_types::ForeignType;
 use hex::{self, FromHex};
@@ -873,7 +872,6 @@ fn test_name_cmp() {
 }
 
 #[test]
-#[cfg(any(boringssl, ossl110, libressl, awslc))]
 fn test_name_to_owned() {
     let cert = include_bytes!("../../test/cert.pem");
     let cert = X509::from_pem(cert).unwrap();
@@ -1185,6 +1183,74 @@ fn other_name_as_subject_alternative_name() {
     unsafe {
         assert_eq!((*general_name.as_ptr()).type_, 0);
     }
+}
+
+#[cfg(ossl110)]
+#[test]
+fn dir_name_as_subject_alternative_name() {
+    // Build original name
+    let mut b = X509Name::builder().unwrap();
+    b.append_entry_by_nid(Nid::COMMONNAME, "dir.example")
+        .unwrap();
+    b.append_entry_by_nid(Nid::COUNTRYNAME, "US").unwrap();
+    let name = b.build();
+
+    // Build a separate literal copy for the SAN
+    let mut b2 = X509Name::builder().unwrap();
+    b2.append_entry_by_nid(Nid::COMMONNAME, "dir.example")
+        .unwrap();
+    b2.append_entry_by_nid(Nid::COUNTRYNAME, "US").unwrap();
+    let name_copy = b2.build();
+
+    // Build certificate with the SAN entry
+    let mut builder = X509Builder::new().unwrap();
+    let san = SubjectAlternativeName::new()
+        .dir_name2(name_copy)
+        .build(&builder.x509v3_context(None, None))
+        .unwrap();
+    builder.append_extension(san).unwrap();
+    let cert = builder.build();
+
+    // Original X509Name still intact
+    assert_eq!(
+        name.entries_by_nid(Nid::COMMONNAME)
+            .next()
+            .unwrap()
+            .data()
+            .as_slice(),
+        b"dir.example"
+    );
+    assert_eq!(
+        name.entries_by_nid(Nid::COUNTRYNAME)
+            .next()
+            .unwrap()
+            .data()
+            .as_slice(),
+        b"US"
+    );
+
+    // Extract SAN directoryName
+    let alt_names = cert.subject_alt_names().unwrap();
+    let dirname = alt_names.iter().find_map(|n| n.directory_name()).unwrap();
+
+    assert_eq!(
+        dirname
+            .entries_by_nid(Nid::COMMONNAME)
+            .next()
+            .unwrap()
+            .data()
+            .as_slice(),
+        b"dir.example"
+    );
+    assert_eq!(
+        dirname
+            .entries_by_nid(Nid::COUNTRYNAME)
+            .next()
+            .unwrap()
+            .data()
+            .as_slice(),
+        b"US"
+    );
 }
 
 #[test]
