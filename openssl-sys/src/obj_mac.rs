@@ -631,6 +631,12 @@ pub const NID_aes_192_ctr: c_int = 905;
 pub const NID_aes_256_ctr: c_int = 906;
 pub const NID_aes_128_xts: c_int = 913;
 pub const NID_aes_256_xts: c_int = 914;
+#[cfg(ossl110)]
+pub const NID_aes_128_ocb: c_int = 958;
+#[cfg(ossl110)]
+pub const NID_aes_192_ocb: c_int = 959;
+#[cfg(ossl110)]
+pub const NID_aes_256_ocb: c_int = 960;
 pub const NID_des_cfb1: c_int = 656;
 pub const NID_des_cfb8: c_int = 657;
 pub const NID_des_ede3_cfb1: c_int = 658;

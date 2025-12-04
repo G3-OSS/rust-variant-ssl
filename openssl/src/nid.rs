@@ -746,6 +746,12 @@ impl Nid {
     pub const AES_256_CTR: Nid = Nid(ffi::NID_aes_256_ctr);
     pub const AES_128_XTS: Nid = Nid(ffi::NID_aes_128_xts);
     pub const AES_256_XTS: Nid = Nid(ffi::NID_aes_256_xts);
+    #[cfg(ossl110)]
+    pub const AES_128_OCB: Nid = Nid(ffi::NID_aes_128_ocb);
+    #[cfg(ossl110)]
+    pub const AES_192_OCB: Nid = Nid(ffi::NID_aes_192_ocb);
+    #[cfg(ossl110)]
+    pub const AES_256_OCB: Nid = Nid(ffi::NID_aes_256_ocb);
     pub const DES_CFB1: Nid = Nid(ffi::NID_des_cfb1);
     pub const DES_CFB8: Nid = Nid(ffi::NID_des_cfb8);
     pub const DES_EDE3_CFB1: Nid = Nid(ffi::NID_des_ede3_cfb1);

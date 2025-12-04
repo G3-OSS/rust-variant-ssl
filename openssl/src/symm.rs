@@ -514,8 +514,10 @@ impl Cipher {
     /// Determines whether the cipher is using CCM mode
     #[cfg(not(any(boringssl, awslc)))]
     fn is_ccm(self) -> bool {
-        // NOTE: OpenSSL returns pointers to static structs, which makes this work as expected
-        self == Cipher::aes_128_ccm() || self == Cipher::aes_256_ccm()
+        matches!(
+            self.nid(),
+            Nid::AES_128_CCM | Nid::AES_192_CCM | Nid::AES_256_CCM
+        )
     }
 
     #[cfg(any(boringssl, awslc))]
@@ -526,9 +528,10 @@ impl Cipher {
     /// Determines whether the cipher is using OCB mode
     #[cfg(all(ossl110, not(osslconf = "OPENSSL_NO_OCB")))]
     fn is_ocb(self) -> bool {
-        self == Cipher::aes_128_ocb()
-            || self == Cipher::aes_192_ocb()
-            || self == Cipher::aes_256_ocb()
+        matches!(
+            self.nid(),
+            Nid::AES_128_OCB | Nid::AES_192_OCB | Nid::AES_256_OCB
+        )
     }
 
     #[cfg(any(not(ossl110), osslconf = "OPENSSL_NO_OCB"))]
