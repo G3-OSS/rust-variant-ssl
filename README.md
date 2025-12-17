@@ -7,7 +7,7 @@ based on [rust-openssl](https://github.com/sfackler/rust-openssl).
 
 ## Release Support
 
-The current supported release of `variant-ssl` is 0.16 and `variant-ssl-sys` is 0.16.
+The current supported release of `variant-ssl` is 0.17 and `variant-ssl-sys` is 0.17.
 
 We will pull in changes from [rust-openssl](https://github.com/sfacker/rust-openssl).
 
