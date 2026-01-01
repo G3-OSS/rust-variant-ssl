@@ -293,7 +293,7 @@ const_ptr_api! {
     }
 }
 extern "C" {
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     pub fn X509_get_signature_nid(x: *const X509) -> c_int;
 
     pub fn X509_EXTENSION_free(ext: *mut X509_EXTENSION);

@@ -3,6 +3,7 @@ use libc::{c_char, c_int};
 
 use std::ffi::CStr;
 use std::ffi::CString;
+use std::fmt;
 use std::str;
 
 use crate::cvt_p;
@@ -45,7 +46,7 @@ pub struct SignatureAlgorithms {
 /// in OpenSSL.
 ///
 /// - [Obj_nid2obj](https://docs.openssl.org/master/man3/OBJ_create/)
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Nid(c_int);
 
 #[allow(non_snake_case)]
@@ -1100,6 +1101,19 @@ impl Nid {
     pub const CHACHA20_POLY1305: Nid = Nid(ffi::NID_chacha20_poly1305);
 }
 
+impl fmt::Debug for Nid {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        if let Ok(short_name) = self.short_name() {
+            f.debug_struct("Nid")
+                .field("nid", &self.0)
+                .field("short_name", &short_name)
+                .finish()
+        } else {
+            f.debug_struct("Nid").field("nid", &self.0).finish()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::Nid;
@@ -1183,5 +1197,18 @@ mod test {
                 "invalid_oid should not return a valid value"
             );
         }
+    }
+
+    #[test]
+    fn test_debug() {
+        assert_eq!(
+            format!("{:?}", Nid::SECP521R1),
+            "Nid { nid: 716, short_name: \"secp521r1\" }"
+        );
+
+        assert_eq!(
+            format!("{:?}", Nid::from_raw(123456789)),
+            "Nid { nid: 123456789 }"
+        );
     }
 }

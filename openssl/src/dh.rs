@@ -153,9 +153,9 @@ impl Dh<Params> {
         ffi::d2i_DHparams
     }
 
-    /// Requires OpenSSL 1.0.2 or newer.
+    /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(DH_get_1024_160)]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     pub fn get_1024_160() -> Result<Dh<Params>, ErrorStack> {
         unsafe {
             ffi::init();
@@ -163,9 +163,9 @@ impl Dh<Params> {
         }
     }
 
-    /// Requires OpenSSL 1.0.2 or newer.
+    /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(DH_get_2048_224)]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     pub fn get_2048_224() -> Result<Dh<Params>, ErrorStack> {
         unsafe {
             ffi::init();
@@ -173,9 +173,9 @@ impl Dh<Params> {
         }
     }
 
-    /// Requires OpenSSL 1.0.2 or newer.
+    /// Requires OpenSSL 1.1.0 or newer.
     #[corresponds(DH_get_2048_256)]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     pub fn get_2048_256() -> Result<Dh<Params>, ErrorStack> {
         unsafe {
             ffi::init();
@@ -339,7 +339,7 @@ mod tests {
     use crate::ssl::{SslContext, SslMethod};
 
     #[test]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     fn test_dh_rfc5114() {
         let mut ctx = SslContext::builder(SslMethod::tls()).unwrap();
         let dh2 = Dh::get_2048_224().unwrap();
@@ -402,7 +402,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     fn test_dh_stored_restored() {
         let dh1 = Dh::get_2048_256().unwrap();
         let key1 = dh1.generate_key().unwrap();
@@ -417,7 +417,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     fn test_set_keys() {
         let dh1 = Dh::get_2048_256().unwrap();
         let key1 = dh1.generate_key().unwrap();
@@ -457,7 +457,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(ossl102)]
+    #[cfg(ossl110)]
     fn test_dh_generate_key_compute_key() {
         let dh1 = Dh::get_2048_224().unwrap().generate_key().unwrap();
         let dh2 = Dh::get_2048_224().unwrap().generate_key().unwrap();

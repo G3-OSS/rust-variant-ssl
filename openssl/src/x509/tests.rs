@@ -17,7 +17,7 @@ use crate::x509::extension::{
 use crate::x509::store::X509Lookup;
 use crate::x509::store::X509StoreBuilder;
 use crate::x509::verify::{X509VerifyFlags, X509VerifyParam};
-#[cfg(any(ossl102, boringssl, awslc))]
+#[cfg(any(ossl110, boringssl, awslc))]
 use crate::x509::X509PurposeId;
 use crate::x509::X509PurposeRef;
 #[cfg(ossl110)]
@@ -1038,7 +1038,7 @@ fn test_verify_param_auth_level() {
 }
 
 #[test]
-#[cfg(any(ossl102, boringssl, awslc))]
+#[cfg(any(ossl110, boringssl, awslc))]
 fn test_set_purpose() {
     let cert = include_bytes!("../../test/leaf.pem");
     let cert = X509::from_pem(cert).unwrap();
@@ -1063,7 +1063,7 @@ fn test_set_purpose() {
 }
 
 #[test]
-#[cfg(any(ossl102, boringssl, awslc))]
+#[cfg(any(ossl110, boringssl, awslc))]
 fn test_set_purpose_fails_verification() {
     let cert = include_bytes!("../../test/leaf.pem");
     let cert = X509::from_pem(cert).unwrap();

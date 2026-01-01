@@ -32,9 +32,9 @@ use crate::ssl::{
     SslAcceptorBuilder, SslConnector, SslContext, SslContextBuilder, SslFiletype, SslMethod,
     SslOptions, SslSessionCacheMode, SslStream, SslVerifyMode, StatusType,
 };
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 use crate::x509::store::X509StoreBuilder;
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 use crate::x509::verify::X509CheckFlags;
 use crate::x509::{X509Name, X509StoreContext, X509VerifyResult, X509};
 
@@ -67,7 +67,7 @@ fn verify_trusted() {
 }
 
 #[test]
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 fn verify_trusted_with_set_cert() {
     let server = Server::builder().build();
 
@@ -702,7 +702,7 @@ fn add_extra_chain_cert() {
 }
 
 #[test]
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 fn verify_valid_hostname() {
     let server = Server::builder().build();
 
@@ -720,7 +720,7 @@ fn verify_valid_hostname() {
 }
 
 #[test]
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 fn verify_invalid_hostname() {
     let mut server = Server::builder();
     server.should_error();
@@ -1487,7 +1487,7 @@ fn session_cache_size() {
 }
 
 #[test]
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 fn add_chain_cert() {
     let ctx = SslContext::builder(SslMethod::tls()).unwrap().build();
     let cert = X509::from_pem(CERT).unwrap();

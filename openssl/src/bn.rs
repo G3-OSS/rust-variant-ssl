@@ -1186,6 +1186,32 @@ impl fmt::Display for BigNum {
     }
 }
 
+impl fmt::UpperHex for BigNumRef {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.to_hex_str() {
+            Ok(s) => {
+                // BoringSSL's BN_bn2hex() returns lower-case hexadecimal, while everyone
+                // else returns upper case.  Unconditionally convert to upper case here
+                // just in case anyone else decides to change behavior in the future.
+                let s = s.to_uppercase();
+
+                if f.alternate() {
+                    <String as fmt::Display>::fmt(&format!("0x{}", &s), f)
+                } else {
+                    <str as fmt::Display>::fmt(&s, f)
+                }
+            }
+            Err(e) => Err(e.into()),
+        }
+    }
+}
+
+impl fmt::UpperHex for BigNum {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.as_ref().fmt(f)
+    }
+}
+
 impl PartialEq<BigNumRef> for BigNumRef {
     fn eq(&self, oth: &BigNumRef) -> bool {
         self.cmp(oth) == Ordering::Equal
@@ -1525,5 +1551,31 @@ mod tests {
 
         assert!(!a.is_even());
         assert!(b.is_even());
+    }
+
+    #[test]
+    fn test_format() {
+        let a = BigNum::from_u32(12345678).unwrap();
+
+        assert_eq!(format!("{}", a), "12345678");
+    }
+
+    #[test]
+    fn test_format_upperhex() {
+        let a = BigNum::from_u32(12345678).unwrap();
+
+        assert_eq!(format!("{:X}", a), "BC614E");
+
+        assert_eq!(format!("{:<20X}", a), "BC614E              ");
+        assert_eq!(format!("{:-<20X}", a), "BC614E--------------");
+        assert_eq!(format!("{:^20X}", a), "       BC614E       ");
+        assert_eq!(format!("{:>20X}", a), "              BC614E");
+
+        assert_eq!(format!("{:#X}", a), "0xBC614E");
+
+        assert_eq!(format!("{:<#20X}", a), "0xBC614E            ");
+        assert_eq!(format!("{:-<#20X}", a), "0xBC614E------------");
+        assert_eq!(format!("{:^#20X}", a), "      0xBC614E      ");
+        assert_eq!(format!("{:>#20X}", a), "            0xBC614E");
     }
 }

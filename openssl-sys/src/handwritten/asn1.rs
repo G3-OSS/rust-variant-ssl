@@ -47,9 +47,8 @@ pub union ASN1_TYPE_value {
 
 extern "C" {
     pub fn ASN1_STRING_type_new(ty: c_int) -> *mut ASN1_STRING;
-    #[cfg(any(ossl110, libressl))]
     pub fn ASN1_STRING_get0_data(x: *const ASN1_STRING) -> *const c_uchar;
-    #[cfg(any(all(ossl102, not(ossl110)), all(libressl, not(libressl430))))]
+    #[cfg(all(libressl, not(libressl430)))]
     pub fn ASN1_STRING_data(x: *mut ASN1_STRING) -> *mut c_uchar;
     pub fn ASN1_STRING_new() -> *mut ASN1_STRING;
     pub fn ASN1_OCTET_STRING_new() -> *mut ASN1_OCTET_STRING;

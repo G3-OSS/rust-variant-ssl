@@ -157,7 +157,7 @@ extern "C" {
     pub fn BASIC_CONSTRAINTS_free(bs: *mut BASIC_CONSTRAINTS);
 }
 
-#[cfg(ossl102)]
+#[cfg(ossl110)]
 extern "C" {
     pub fn X509_check_host(
         x: *mut X509,
