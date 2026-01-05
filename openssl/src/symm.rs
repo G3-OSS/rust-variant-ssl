@@ -55,7 +55,6 @@ use crate::cipher::CipherRef;
 use crate::cipher_ctx::{CipherCtx, CipherCtxRef};
 use crate::error::ErrorStack;
 use crate::nid::Nid;
-use cfg_if::cfg_if;
 use foreign_types::ForeignTypeRef;
 use openssl_macros::corresponds;
 
@@ -921,28 +920,7 @@ pub fn decrypt_aead(
     Ok(out)
 }
 
-cfg_if! {
-    if #[cfg(any(boringssl, ossl110, libressl, awslc))] {
-        use ffi::{EVP_CIPHER_block_size, EVP_CIPHER_iv_length, EVP_CIPHER_key_length};
-    } else {
-        use crate::LenType;
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_iv_length(ptr: *const ffi::EVP_CIPHER) -> LenType {
-            (*ptr).iv_len
-        }
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_block_size(ptr: *const ffi::EVP_CIPHER) -> LenType {
-            (*ptr).block_size
-        }
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_key_length(ptr: *const ffi::EVP_CIPHER) -> LenType {
-            (*ptr).key_len
-        }
-    }
-}
+use ffi::{EVP_CIPHER_block_size, EVP_CIPHER_iv_length, EVP_CIPHER_key_length};
 
 #[cfg(test)]
 mod tests {

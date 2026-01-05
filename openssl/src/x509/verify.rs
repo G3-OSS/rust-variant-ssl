@@ -55,9 +55,7 @@ bitflags! {
         #[cfg(ossl110)]
         const SUITEB_128_LOS = ffi::X509_V_FLAG_SUITEB_192_LOS;
         const PARTIAL_CHAIN = ffi::X509_V_FLAG_PARTIAL_CHAIN as _;
-        #[cfg(any(ossl110, boringssl, awslc, libressl))]
         const NO_ALT_CHAINS = ffi::X509_V_FLAG_NO_ALT_CHAINS as _;
-        #[cfg(any(ossl110, boringssl, awslc, libressl))]
         const NO_CHECK_TIME = ffi::X509_V_FLAG_NO_CHECK_TIME as _;
     }
 }

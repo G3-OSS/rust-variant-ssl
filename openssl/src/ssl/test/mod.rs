@@ -24,7 +24,7 @@ use crate::srtp::SrtpProfileId;
 use crate::ssl::test::server::Server;
 #[cfg(ossl111)]
 use crate::ssl::ExtensionContext;
-#[cfg(any(ossl110, ossl111, libressl))]
+#[cfg(any(ossl110, libressl))]
 use crate::ssl::SslVersion;
 use crate::ssl::{self, NameType, SslConnectorBuilder};
 use crate::ssl::{

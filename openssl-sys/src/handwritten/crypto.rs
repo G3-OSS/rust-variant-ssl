@@ -3,22 +3,12 @@ use libc::*;
 
 stack!(stack_st_void);
 
-cfg_if! {
-    if #[cfg(any(ossl110, libressl))] {
-        extern "C" {
-            pub fn OpenSSL_version_num() -> c_ulong;
-            pub fn OpenSSL_version(key: c_int) -> *const c_char;
-        }
-    } else {
-        extern "C" {
-            pub fn SSLeay() -> c_ulong;
-            pub fn SSLeay_version(key: c_int) -> *const c_char;
-        }
-    }
+extern "C" {
+    pub fn OpenSSL_version_num() -> c_ulong;
+    pub fn OpenSSL_version(key: c_int) -> *const c_char;
 }
 
 extern "C" {
-    #[cfg(any(ossl110, libressl))]
     pub fn CRYPTO_get_ex_new_index(
         class_index: c_int,
         argl: c_long,

@@ -7,7 +7,6 @@
 //! Internet protocols, including SSL/TLS, which is the basis for HTTPS,
 //! the secure protocol for browsing the web.
 
-use cfg_if::cfg_if;
 use foreign_types::{ForeignType, ForeignTypeRef, Opaque};
 use libc::{c_int, c_long, c_uchar, c_uint, c_void};
 use std::cmp::{self, Ordering};
@@ -2584,148 +2583,20 @@ impl Stackable for X509Object {
     type StackType = ffi::stack_st_X509_OBJECT;
 }
 
-cfg_if! {
-    if #[cfg(any(boringssl, ossl110, libressl, awslc))] {
-        use ffi::{X509_getm_notAfter, X509_getm_notBefore, X509_up_ref, X509_get0_signature};
-    } else {
-        #[allow(bad_style)]
-        unsafe fn X509_getm_notAfter(x: *mut ffi::X509) -> *mut ffi::ASN1_TIME {
-            (*(*(*x).cert_info).validity).notAfter
-        }
+use ffi::{X509_get0_signature, X509_getm_notAfter, X509_getm_notBefore, X509_up_ref};
 
-        #[allow(bad_style)]
-        unsafe fn X509_getm_notBefore(x: *mut ffi::X509) -> *mut ffi::ASN1_TIME {
-            (*(*(*x).cert_info).validity).notBefore
-        }
+use ffi::{
+    ASN1_STRING_get0_data, X509_ALGOR_get0, X509_REQ_get_subject_name, X509_REQ_get_version,
+    X509_STORE_CTX_get0_chain, X509_set1_notAfter, X509_set1_notBefore,
+};
 
-        #[allow(bad_style)]
-        unsafe fn X509_up_ref(x: *mut ffi::X509) {
-            ffi::CRYPTO_add_lock(
-                &mut (*x).references,
-                1,
-                ffi::CRYPTO_LOCK_X509,
-                "mod.rs\0".as_ptr() as *const _,
-                line!() as c_int,
-            );
-        }
+use ffi::X509_OBJECT_free;
+use ffi::X509_OBJECT_get0_X509;
 
-        #[allow(bad_style)]
-        unsafe fn X509_get0_signature(
-            psig: *mut *const ffi::ASN1_BIT_STRING,
-            palg: *mut *const ffi::X509_ALGOR,
-            x: *const ffi::X509,
-        ) {
-            if !psig.is_null() {
-                *psig = (*x).signature;
-            }
-            if !palg.is_null() {
-                *palg = (*x).sig_alg;
-            }
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(boringssl, ossl110, libressl, awslc))] {
-        use ffi::{
-            X509_ALGOR_get0, ASN1_STRING_get0_data, X509_STORE_CTX_get0_chain, X509_set1_notAfter,
-            X509_set1_notBefore, X509_REQ_get_version, X509_REQ_get_subject_name,
-        };
-    } else {
-        use ffi::{
-            ASN1_STRING_data as ASN1_STRING_get0_data,
-            X509_STORE_CTX_get_chain as X509_STORE_CTX_get0_chain,
-            X509_set_notAfter as X509_set1_notAfter,
-            X509_set_notBefore as X509_set1_notBefore,
-        };
-
-        #[allow(bad_style)]
-        unsafe fn X509_REQ_get_version(x: *mut ffi::X509_REQ) -> ::libc::c_long {
-            ffi::ASN1_INTEGER_get((*(*x).req_info).version)
-        }
-
-        #[allow(bad_style)]
-        unsafe fn X509_REQ_get_subject_name(x: *mut ffi::X509_REQ) -> *mut ::ffi::X509_NAME {
-            (*(*x).req_info).subject
-        }
-
-        #[allow(bad_style)]
-        unsafe fn X509_ALGOR_get0(
-            paobj: *mut *const ffi::ASN1_OBJECT,
-            pptype: *mut c_int,
-            pval: *mut *mut ::libc::c_void,
-            alg: *const ffi::X509_ALGOR,
-        ) {
-            if !paobj.is_null() {
-                *paobj = (*alg).algorithm;
-            }
-            assert!(pptype.is_null());
-            assert!(pval.is_null());
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(ossl110, boringssl, libressl, awslc))] {
-        use ffi::X509_OBJECT_get0_X509;
-    } else {
-        #[allow(bad_style)]
-        unsafe fn X509_OBJECT_get0_X509(x: *mut ffi::X509_OBJECT) -> *mut ffi::X509 {
-            if (*x).type_ == ffi::X509_LU_X509 {
-                (*x).data.x509
-            } else {
-                ptr::null_mut()
-            }
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
-        use ffi::X509_OBJECT_free;
-    } else {
-        #[allow(bad_style)]
-        unsafe fn X509_OBJECT_free(x: *mut ffi::X509_OBJECT) {
-            ffi::X509_OBJECT_free_contents(x);
-            ffi::CRYPTO_free(x as *mut libc::c_void);
-        }
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
-        use ffi::{
-            X509_CRL_get_issuer, X509_CRL_get0_nextUpdate, X509_CRL_get0_lastUpdate,
-            X509_CRL_get_REVOKED,
-            X509_REVOKED_get0_revocationDate, X509_REVOKED_get0_serialNumber,
-        };
-    } else {
-        #[allow(bad_style)]
-        unsafe fn X509_CRL_get0_lastUpdate(x: *const ffi::X509_CRL) -> *mut ffi::ASN1_TIME {
-            (*(*x).crl).lastUpdate
-        }
-        #[allow(bad_style)]
-        unsafe fn X509_CRL_get0_nextUpdate(x: *const ffi::X509_CRL) -> *mut ffi::ASN1_TIME {
-            (*(*x).crl).nextUpdate
-        }
-        #[allow(bad_style)]
-        unsafe fn X509_CRL_get_issuer(x: *const ffi::X509_CRL) -> *mut ffi::X509_NAME {
-            (*(*x).crl).issuer
-        }
-        #[allow(bad_style)]
-        unsafe fn X509_CRL_get_REVOKED(x: *const ffi::X509_CRL) -> *mut ffi::stack_st_X509_REVOKED {
-            (*(*x).crl).revoked
-        }
-        #[allow(bad_style)]
-        unsafe fn X509_REVOKED_get0_serialNumber(x: *const ffi::X509_REVOKED) -> *mut ffi::ASN1_INTEGER {
-            (*x).serialNumber
-        }
-        #[allow(bad_style)]
-        unsafe fn X509_REVOKED_get0_revocationDate(x: *const ffi::X509_REVOKED) -> *mut ffi::ASN1_TIME {
-            (*x).revocationDate
-        }
-    }
-}
+use ffi::{
+    X509_CRL_get0_lastUpdate, X509_CRL_get0_nextUpdate, X509_CRL_get_REVOKED, X509_CRL_get_issuer,
+    X509_REVOKED_get0_revocationDate, X509_REVOKED_get0_serialNumber,
+};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct X509PurposeId(c_int);
@@ -2780,13 +2651,7 @@ impl X509PurposeRef {
     pub fn get_by_sname(sname: &str) -> Result<c_int, ErrorStack> {
         unsafe {
             let sname = CString::new(sname).unwrap();
-            cfg_if! {
-                if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
-                    let purpose = cvt_n(ffi::X509_PURPOSE_get_by_sname(sname.as_ptr() as *const _))?;
-                } else {
-                    let purpose = cvt_n(ffi::X509_PURPOSE_get_by_sname(sname.as_ptr() as *mut _))?;
-                }
-            }
+            let purpose = cvt_n(ffi::X509_PURPOSE_get_by_sname(sname.as_ptr() as *const _))?;
             Ok(purpose)
         }
     }
@@ -2812,13 +2677,7 @@ impl X509PurposeRef {
     /// - `X509_PURPOSE_TIMESTAMP_SIGN`
     pub fn purpose(&self) -> X509PurposeId {
         unsafe {
-            cfg_if! {
-                if #[cfg(any(ossl110, libressl, boringssl, awslc))] {
-                    let x509_purpose = self.as_ptr() as *const ffi::X509_PURPOSE;
-                } else {
-                    let x509_purpose = self.as_ptr() as *mut ffi::X509_PURPOSE;
-                }
-            }
+            let x509_purpose = self.as_ptr() as *const ffi::X509_PURPOSE;
             X509PurposeId::from_raw(ffi::X509_PURPOSE_get_id(x509_purpose))
         }
     }

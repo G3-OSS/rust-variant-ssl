@@ -16,28 +16,7 @@ use std::ops::{Deref, DerefMut};
 #[cfg(ossl300)]
 use std::ptr;
 
-cfg_if! {
-    if #[cfg(any(boringssl, ossl110, libressl, awslc))] {
-        use ffi::{EVP_CIPHER_block_size, EVP_CIPHER_iv_length, EVP_CIPHER_key_length};
-    } else {
-        use libc::c_int;
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_iv_length(ptr: *const ffi::EVP_CIPHER) -> c_int {
-            (*ptr).iv_len
-        }
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_block_size(ptr: *const ffi::EVP_CIPHER) -> c_int {
-            (*ptr).block_size
-        }
-
-        #[allow(bad_style)]
-        pub unsafe fn EVP_CIPHER_key_length(ptr: *const ffi::EVP_CIPHER) -> c_int {
-            (*ptr).key_len
-        }
-    }
-}
+use ffi::{EVP_CIPHER_block_size, EVP_CIPHER_iv_length, EVP_CIPHER_key_length};
 
 cfg_if! {
     if #[cfg(ossl300)] {

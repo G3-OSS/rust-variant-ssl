@@ -246,7 +246,6 @@ impl EcGroupRef {
 
     /// Returns the number of bits in the group order.
     #[corresponds(EC_GROUP_order_bits)]
-    #[cfg(any(ossl110, libressl, awslc, boringssl))]
     pub fn order_bits(&self) -> u32 {
         unsafe { ffi::EC_GROUP_order_bits(self.as_ptr()) as u32 }
     }
@@ -1422,7 +1421,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(any(boringssl, ossl111, libressl, awslc))]
+    #[cfg(any(ossl111, boringssl, libressl, awslc))]
     fn asn1_flag() {
         let group = EcGroup::from_curve_name(Nid::X9_62_PRIME256V1).unwrap();
         let flag = group.asn1_flag();

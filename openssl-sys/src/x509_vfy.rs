@@ -119,9 +119,7 @@ pub const X509_V_FLAG_SUITEB_192_LOS: c_ulong = 0x20000;
 #[cfg(ossl110)]
 pub const X509_V_FLAG_SUITEB_128_LOS: c_ulong = 0x30000;
 pub const X509_V_FLAG_PARTIAL_CHAIN: c_ulong = 0x80000;
-#[cfg(any(ossl110, libressl))]
 pub const X509_V_FLAG_NO_ALT_CHAINS: c_ulong = 0x100000;
-#[cfg(any(ossl110, libressl))]
 pub const X509_V_FLAG_NO_CHECK_TIME: c_ulong = 0x200000;
 
 pub unsafe fn X509_LOOKUP_add_dir(
