@@ -115,6 +115,26 @@ pub const NID_brainpoolP512r1: c_int = 933;
 #[cfg(libressl)]
 pub const NID_brainpoolP512r1: c_int = 934;
 
+#[cfg(ossl110)]
+pub const NID_brainpoolP256t1: c_int = 928;
+#[cfg(libressl)]
+pub const NID_brainpoolP256t1: c_int = 929;
+
+#[cfg(ossl110)]
+pub const NID_brainpoolP320t1: c_int = 930;
+#[cfg(libressl)]
+pub const NID_brainpoolP320t1: c_int = 931;
+
+#[cfg(ossl110)]
+pub const NID_brainpoolP384t1: c_int = 932;
+#[cfg(libressl)]
+pub const NID_brainpoolP384t1: c_int = 933;
+
+#[cfg(ossl110)]
+pub const NID_brainpoolP512t1: c_int = 934;
+#[cfg(libressl)]
+pub const NID_brainpoolP512t1: c_int = 935;
+
 pub const NID_wap_wsg_idm_ecid_wtls1: c_int = 735;
 pub const NID_wap_wsg_idm_ecid_wtls3: c_int = 736;
 pub const NID_wap_wsg_idm_ecid_wtls4: c_int = 737;
