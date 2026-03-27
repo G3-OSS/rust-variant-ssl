@@ -220,7 +220,10 @@ impl OcspBasicResponseRef {
     pub fn find_status<'a>(&'a self, id: &OcspCertIdRef) -> Option<OcspStatus<'a>> {
         unsafe {
             let mut status = ffi::V_OCSP_CERTSTATUS_UNKNOWN;
+            #[cfg(not(awslc_fips))]
             let mut reason = ffi::OCSP_REVOKED_STATUS_NOSTATUS;
+            #[cfg(awslc_fips)]
+            let mut reason = -1;
             let mut revocation_time = ptr::null_mut();
             let mut this_update = ptr::null_mut();
             let mut next_update = ptr::null_mut();
