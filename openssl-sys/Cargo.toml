@@ -17,16 +17,18 @@ tongsuo = ["dep:tongsuo-src"]
 boringssl = ["dep:bssl-sys"]
 aws-lc = ["dep:aws-lc-sys"]
 aws-lc-fips = ['dep:aws-lc-fips-sys']
-bindgen = ["dep:bindgen", "aws-lc-sys?/bindgen"]
+bindgen = ["dep:bindgen", "aws-lc-sys?/bindgen", "aws-lc-fips-sys?/bindgen"]
+runtime-libclang = ["bindgen?/runtime", "bssl-sys?/runtime-libclang"]
+static-libclang = ["bindgen?/static", "bssl-sys?/static-libclang"]
 
 [dependencies]
 libc = "0.2"
-bssl-sys = { package = "bssl-cmake-sys", version = "0.1.2407220", optional = true }
+bssl-sys = { package = "bssl-cmake-sys", version = "0.1.2603271", optional = true, default-features = false }
 aws-lc-sys = { version = "0.39.0", optional = true, features = ["ssl"] }
-aws-lc-fips-sys = { version = "0.13.8", features = ["ssl", "bindgen"], optional = true }
+aws-lc-fips-sys = { version = "0.13.8", features = ["ssl"], optional = true }
 
 [build-dependencies]
-bindgen = { version = "0.72.0", optional = true }
+bindgen = { version = "0.72.0", optional = true, default-features = false }
 cc = "1.0.61"
 openssl-src = { version = "300.2.0", optional = true }
 tongsuo-src = { version = "850", optional = true }
