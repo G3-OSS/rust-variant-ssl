@@ -264,7 +264,7 @@ jobs:
           run: |
             case "${{ matrix.target }}" in
             "x86_64-unknown-linux-gnu")
-              exit 0
+              packages=""
               ;;
             "i686-unknown-linux-gnu")
               packages="gcc-multilib g++-multilib"

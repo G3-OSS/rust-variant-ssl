@@ -12,6 +12,7 @@ edition = "2021"
 rust-version = "1.71.0"
 
 [features]
+default = ["runtime-libclang"]
 vendored = ["dep:openssl-src"]
 tongsuo = ["dep:tongsuo-src"]
 boringssl = ["dep:bssl-sys"]
