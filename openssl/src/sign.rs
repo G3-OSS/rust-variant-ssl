@@ -663,7 +663,7 @@ mod test {
         // test vectors from RFC 2202
         let tests: [(Vec<u8>, Vec<u8>, Vec<u8>); 7] = [
             (
-                iter::repeat(0x0b_u8).take(16).collect(),
+                iter::repeat_n(0x0b_u8, 16).collect(),
                 b"Hi There".to_vec(),
                 Vec::from_hex("9294727a3638bb1c13f48ef8158bfc9d").unwrap(),
             ),
@@ -673,27 +673,27 @@ mod test {
                 Vec::from_hex("750c783e6ab0b503eaa86e310a5db738").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(16).collect(),
-                iter::repeat(0xdd_u8).take(50).collect(),
+                iter::repeat_n(0xaa_u8, 16).collect(),
+                iter::repeat_n(0xdd_u8, 50).collect(),
                 Vec::from_hex("56be34521d144c88dbb8c733f0e8b3f6").unwrap(),
             ),
             (
                 Vec::from_hex("0102030405060708090a0b0c0d0e0f10111213141516171819").unwrap(),
-                iter::repeat(0xcd_u8).take(50).collect(),
+                iter::repeat_n(0xcd_u8, 50).collect(),
                 Vec::from_hex("697eaf0aca3a3aea3a75164746ffaa79").unwrap(),
             ),
             (
-                iter::repeat(0x0c_u8).take(16).collect(),
+                iter::repeat_n(0x0c_u8, 16).collect(),
                 b"Test With Truncation".to_vec(),
                 Vec::from_hex("56461ef2342edc00f9bab995690efd4c").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(80).collect(),
+                iter::repeat_n(0xaa_u8, 80).collect(),
                 b"Test Using Larger Than Block-Size Key - Hash Key First".to_vec(),
                 Vec::from_hex("6b1ab7fe4bd7bf8f0b62e6ce61b9d0cd").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(80).collect(),
+                iter::repeat_n(0xaa_u8, 80).collect(),
                 b"Test Using Larger Than Block-Size Key \
               and Larger Than One Block-Size Data"
                     .to_vec(),
@@ -710,7 +710,7 @@ mod test {
         // test vectors from RFC 2202
         let tests: [(Vec<u8>, Vec<u8>, Vec<u8>); 7] = [
             (
-                iter::repeat(0x0b_u8).take(20).collect(),
+                iter::repeat_n(0x0b_u8, 20).collect(),
                 b"Hi There".to_vec(),
                 Vec::from_hex("b617318655057264e28bc0b6fb378c8ef146be00").unwrap(),
             ),
@@ -720,27 +720,27 @@ mod test {
                 Vec::from_hex("effcdf6ae5eb2fa2d27416d5f184df9c259a7c79").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(20).collect(),
-                iter::repeat(0xdd_u8).take(50).collect(),
+                iter::repeat_n(0xaa_u8, 20).collect(),
+                iter::repeat_n(0xdd_u8, 50).collect(),
                 Vec::from_hex("125d7342b9ac11cd91a39af48aa17b4f63f175d3").unwrap(),
             ),
             (
                 Vec::from_hex("0102030405060708090a0b0c0d0e0f10111213141516171819").unwrap(),
-                iter::repeat(0xcd_u8).take(50).collect(),
+                iter::repeat_n(0xcd_u8, 50).collect(),
                 Vec::from_hex("4c9007f4026250c6bc8414f9bf50c86c2d7235da").unwrap(),
             ),
             (
-                iter::repeat(0x0c_u8).take(20).collect(),
+                iter::repeat_n(0x0c_u8, 20).collect(),
                 b"Test With Truncation".to_vec(),
                 Vec::from_hex("4c1a03424b55e07fe7f27be1d58bb9324a9a5a04").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(80).collect(),
+                iter::repeat_n(0xaa_u8, 80).collect(),
                 b"Test Using Larger Than Block-Size Key - Hash Key First".to_vec(),
                 Vec::from_hex("aa4ae5e15272d00e95705637ce8a3b55ed402112").unwrap(),
             ),
             (
-                iter::repeat(0xaa_u8).take(80).collect(),
+                iter::repeat_n(0xaa_u8, 80).collect(),
                 b"Test Using Larger Than Block-Size Key \
               and Larger Than One Block-Size Data"
                     .to_vec(),
