@@ -1,6 +1,6 @@
 [package]
 name = "variant-ssl"
-version = "0.17.21"
+version = "0.17.22"
 license = "Apache-2.0"
 description = "Bindings for OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
 repository = "https://github.com/G3-OSS/rust-variant-ssl"
@@ -11,13 +11,15 @@ edition = "2021"
 rust-version = "1.71.0"
 
 [features]
+default = ['runtime-libclang']
 vendored = ['ffi/vendored']
 tongsuo = ['ffi/tongsuo']
-bindgen = ['ffi/bindgen']
 boringssl = ["ffi/boringssl"]
 aws-lc = ["ffi/aws-lc"]
 aws-lc-fips = ["ffi/aws-lc-fips"]
-default = []
+bindgen = ['ffi/bindgen']
+runtime-libclang = ['ffi/runtime-libclang']
+static-libclang = ['ffi/static-libclang']
 
 [dependencies]
 bitflags = "2.2.1"
@@ -27,7 +29,7 @@ libc = "0.2"
 once_cell = "1.5.2"
 
 openssl-macros = { version = "0.1.1" }
-ffi = { package = "variant-ssl-sys", version = "0.17.21", path = "../openssl-sys" }
+ffi = { package = "variant-ssl-sys", version = "0.17.22", path = "../openssl-sys" }
 
 [dev-dependencies]
 hex = "0.4"
