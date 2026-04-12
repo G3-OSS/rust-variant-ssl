@@ -24,7 +24,7 @@ pub unsafe fn EVP_EC_gen(curve: *const c_char) -> *mut EVP_PKEY {
     EVP_PKEY_Q_keygen(
         ptr::null_mut(),
         ptr::null_mut(),
-        "EC\0".as_ptr().cast(),
+        c"EC".as_ptr().cast(),
         curve,
     )
 }

@@ -32,8 +32,8 @@ impl MacCtx {
 
     /// Set key and digest
     pub fn init_ex(&mut self, key: Option<&[u8]>, md: &CStr) -> Result<(), ErrorStack> {
-        let key_field_name = CStr::from_bytes_with_nul(b"key\0").unwrap();
-        let digest_field_name = CStr::from_bytes_with_nul(b"digest\0").unwrap();
+        let key_field_name = c"key";
+        let digest_field_name = c"digest";
 
         let key_len = key.map(|v| v.len()).unwrap_or_default();
         let key = key.map(|v| v.as_ptr()).unwrap_or(ptr::null());

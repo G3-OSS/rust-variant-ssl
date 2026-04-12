@@ -1,4 +1,3 @@
-use openssl_src;
 use std::path::PathBuf;
 
 use super::env;

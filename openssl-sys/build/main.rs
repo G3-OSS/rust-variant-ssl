@@ -53,7 +53,7 @@ fn find_openssl(target: &str) -> (Vec<PathBuf>, PathBuf) {
     {
         // vendor if the feature is present, unless
         // OPENSSL_NO_VENDOR exists and isn't `0`
-        if env("OPENSSL_NO_VENDOR").map_or(true, |s| s == "0") {
+        if env("OPENSSL_NO_VENDOR").is_none_or(|s| s == "0") {
             return find_vendored::get_openssl(target);
         }
     }
@@ -61,7 +61,7 @@ fn find_openssl(target: &str) -> (Vec<PathBuf>, PathBuf) {
     {
         // vendor if the feature is present, unless
         // TONGSUO_NO_VENDOR exists and isn't `0`
-        if env("TONGSUO_NO_VENDOR").map_or(true, |s| s == "0") {
+        if env("TONGSUO_NO_VENDOR").is_none_or(|s| s == "0") {
             return find_tongsuo_vendored::get_openssl(target);
         }
     }

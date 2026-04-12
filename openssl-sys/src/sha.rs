@@ -15,7 +15,7 @@ cfg_if! {
         pub unsafe fn SHA1(d: *const c_uchar, n: size_t, md: *mut c_uchar) -> *mut c_uchar {
             if EVP_Q_digest(
                 ptr::null_mut(),
-                "SHA1\0".as_ptr() as *const c_char,
+                c"SHA1".as_ptr() as *const c_char,
                 ptr::null(),
                 d as *const c_void,
                 n,
@@ -32,7 +32,7 @@ cfg_if! {
         pub unsafe fn SHA224(d: *const c_uchar, n: size_t, md: *mut c_uchar) -> *mut c_uchar {
             if EVP_Q_digest(
                 ptr::null_mut(),
-                "SHA224\0".as_ptr() as *const c_char,
+                c"SHA224".as_ptr() as *const c_char,
                 ptr::null(),
                 d as *const c_void,
                 n,
@@ -48,7 +48,7 @@ cfg_if! {
         pub unsafe fn SHA256(d: *const c_uchar, n: size_t, md: *mut c_uchar) -> *mut c_uchar {
             if EVP_Q_digest(
                 ptr::null_mut(),
-                "SHA256\0".as_ptr() as *const c_char,
+                c"SHA256".as_ptr() as *const c_char,
                 ptr::null(),
                 d as *const c_void,
                 n,
@@ -71,7 +71,7 @@ cfg_if! {
         pub unsafe fn SHA384(d: *const c_uchar, n: size_t, md: *mut c_uchar) -> *mut c_uchar {
             if EVP_Q_digest(
                 ptr::null_mut(),
-                "SHA384\0".as_ptr() as *const c_char,
+                c"SHA384".as_ptr() as *const c_char,
                 ptr::null(),
                 d as *const c_void,
                 n,
@@ -87,7 +87,7 @@ cfg_if! {
         pub unsafe fn SHA512(d: *const c_uchar, n: size_t, md: *mut c_uchar) -> *mut c_uchar {
             if EVP_Q_digest(
                 ptr::null_mut(),
-                "SHA512\0".as_ptr() as *const c_char,
+                c"SHA512".as_ptr() as *const c_char,
                 ptr::null(),
                 d as *const c_void,
                 n,
