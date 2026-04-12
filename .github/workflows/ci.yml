@@ -275,7 +275,7 @@ jobs:
             esac
 
             sudo apt-get update
-            sudo apt-get install -y $packages
+            sudo apt-get install -y $packages libclang-dev
         - run: sudo apt-get remove -y libssl-dev
         - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
           with:
