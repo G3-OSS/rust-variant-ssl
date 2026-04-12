@@ -9,7 +9,7 @@ categories = ["cryptography", "external-ffi-bindings"]
 links = "openssl"
 build = "build/main.rs"
 edition = "2021"
-rust-version = "1.71.0"
+rust-version = "1.85.0"
 
 [features]
 default = ["runtime-libclang"]

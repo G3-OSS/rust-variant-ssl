@@ -68,7 +68,7 @@ jobs:
       # Remember to also update `--rust-target` in `openssl-sys/build/run_bindgen.rs`
       - uses: sfackler/actions/rustup@55af96fecc6b2ff28431120e3d9b723e5c1bccbf # master
         with:
-          version: 1.71.0
+          version: 1.85.0
       - run: echo "version=$(rustc --version)" >> $GITHUB_OUTPUT
         id: rust-version
       - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
@@ -77,15 +77,7 @@ jobs:
           key: index-${{ runner.os }}-${{ github.run_number }}
           restore-keys: |
             index-${{ runner.os }}-
-      # ctest 0.5 uses edition 2024 which Rust 1.70's cargo can't parse
-      - run: sed -i '/"systest",/d' Cargo.toml
       - run: cargo generate-lockfile
-      - run: |
-          cargo update -p unicode-ident --precise 1.0.22
-          cargo update -p syn --precise 2.0.114
-          cargo update -p once_cell --precise 1.20.3
-          cargo update -p wasip2 --precise 1.0.1+wasi-0.2.4
-          cargo update -p quote --precise 1.0.44
       - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.cargo/registry/cache
