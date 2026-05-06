@@ -199,10 +199,7 @@ impl BioMethod {
         };
 
         unsafe {
-            let ptr = cvt_p(ffi::BIO_meth_new(
-                ffi::BIO_TYPE_NONE,
-                c"rust".as_ptr() as *const _,
-            ))?;
+            let ptr = cvt_p(ffi::BIO_meth_new(ffi::BIO_TYPE_NONE, c"rust".as_ptr()))?;
             let method = BioMethod::from_ptr(ptr);
             cvt(BIO_meth_set_write(method.as_ptr(), Some(bwrite::<S>)))?;
             cvt(BIO_meth_set_read(method.as_ptr(), Some(bread::<S>)))?;

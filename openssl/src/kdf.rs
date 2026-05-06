@@ -48,10 +48,6 @@ cfg_if::cfg_if! {
         const OSSL_KDF_PARAM_INFO: &CStr = c"info";
         const OSSL_KDF_PARAM_MODE: &CStr = c"mode";
 
-        // Safety: these all have null terminators.
-        // We cen remove these CStr::from_bytes_with_nul_unchecked calls
-        // when we upgrade to Rust 1.77+ with literal c"" syntax.
-
         /// Derives a key using a KDF.
         fn kdf_digest(
             kdf_identifier: &CStr,

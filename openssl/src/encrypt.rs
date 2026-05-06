@@ -160,7 +160,7 @@ impl<'a> Encrypter<'a> {
                 label.len() as _,
             ))
             .map(|_| ())
-            .inspect_err(|_e| {
+            .inspect_err(|_| {
                 ffi::OPENSSL_free(p);
             })
         }
@@ -343,7 +343,7 @@ impl<'a> Decrypter<'a> {
                 label.len() as _,
             ))
             .map(|_| ())
-            .inspect_err(|_e| {
+            .inspect_err(|_| {
                 ffi::OPENSSL_free(p);
             })
         }
