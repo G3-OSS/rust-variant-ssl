@@ -1,6 +1,6 @@
 [package]
 name = "variant-ssl"
-version = "0.17.26"
+version = "0.17.27"
 license = "Apache-2.0"
 description = "Bindings for OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
 repository = "https://github.com/VEY-OSS/rust-variant-ssl"
