@@ -32,7 +32,7 @@ aws-lc-fips-sys = { version = "0.13.8", features = ["ssl"], optional = true }
 bindgen = { version = "0.72.0", optional = true, default-features = false }
 cc = "1.0.61"
 openssl-src = { version = "300.2.0", optional = true }
-tongsuo-src = { version = "833", optional = true }
+tongsuo-src = { version = "850", optional = true }
 pkg-config = "0.3.9"
 vcpkg = "0.2.8"
 
