@@ -1,6 +1,6 @@
 [package]
 name = "variant-ssl"
-version = "0.17.27"
+version = "0.17.28"
 license = "Apache-2.0"
 description = "Bindings for OpenSSL variants such as BoringSSL / AWS-LC / Tongsuo"
 repository = "https://github.com/VEY-OSS/rust-variant-ssl"
@@ -28,7 +28,7 @@ foreign-types = "0.3.1"
 libc = "0.2"
 
 openssl-macros = { version = "0.1.1" }
-ffi = { package = "variant-ssl-sys", version = "0.17.26", path = "../openssl-sys" }
+ffi = { package = "variant-ssl-sys", version = "0.17.28", path = "../openssl-sys" }
 
 [dev-dependencies]
 hex = "0.4"
